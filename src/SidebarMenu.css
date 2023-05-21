@@ -1,3 +1,39 @@
 .nav-pills li a:hover {
     background-color: rgb(52, 52, 236)
 }
+
+.b-dark{
+    background-color: #202123
+    /*#383838*/
+}
+.main-b-dark {
+    background-color: #353740
+    /*background-color: #001e3c */
+    
+}
+.main-b-light {
+    background-color: #ffffff
+}
+.b-light{
+    background-color: #DDD;
+    /* background-color: #F6F5FF; */
+    /* background-color: #FFF; */
+    /* background-color: #E4E9F7; */
+
+    /* background-color: #ffffff */
+    /*#383838*/
+}
+
+
+.dark {
+    color: #ffffff; /* color de fuente en modo oscuro */
+    background-color: #333333; /* fondo en modo oscuro */
+    /* otros estilos específicos del modo oscuro */
+  }
+  
+  .light {
+    color: #000000; /* color de fuente en modo claro */
+    background-color: #ffffff; /* fondo en modo claro */
+    /* otros estilos específicos del modo claro */
+  }
+  
