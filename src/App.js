@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import SitebarMenu from './components/SidebarMenu';
 import SitebarMenu2 from './components/SidebarMenu2';
 import AddCar from './components/projects/cars/AddCar';
+import CarList from './components/projects/cars/CarList';
 import ReportPDF from './components/projects/reports/ReportPDF';
 import Dashboard from './components/Dashboard';
 
@@ -12,6 +13,7 @@ function App() {
       <SitebarMenu>
         <Routes>
           <Route path='/' element={<Dashboard/>}/>
+          <Route path='/cars' element={ <CarList/> } />
         </Routes>
       </SitebarMenu>
     </Router>
