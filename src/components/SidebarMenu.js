@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/js/dist/dropdown.js'
 import '../SidebarMenu.css'
+import { Link } from "react-router-dom";
 
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -17,45 +18,45 @@ const SitebarMenu = ({ children }) => {
     }
 
     return (
-        <div className={`d-flex main-b-${darkMode ? 'dark' : 'light'}`}>
-            <div className={`b-dark col-auto col-md-2 min-vh-100 d-flex  justify-content-between flex-column`}>
+        <div className={`d-flex main-b-${darkMode ? 'dark' : 'light'}`} >
+            <div className={`b-dark col-auto col-md-2 min-vh-100 d-flex  justify-content-between flex-column`} >
                 <div>
-                    <a href='/' className={`text-decoration-none text-white d-none d-sm-inline d-flex align-itemcenter ms-3 mt-3`}>
+                    <Link to='/' className={`text-decoration-none text-white d-none d-sm-inline d-flex align-itemcenter ms-3 mt-3`}>
                         <i className="fs-4 bi bi-speedmeter"></i>
                         <span className={`ms-1 fs-4 d-none d-sm-inline`}>Experientime</span>
-                    </a>
+                    </Link>
                     <hr className="text-secondary d-none d-sm-block" />
                     <ul className="nav nav-pills flex-column mt-3 mt-sm-0">
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                            <a href='/' className="nav-link text-white fs-5" aria-current="page">
+                            <Link to='/' className="nav-link text-white fs-5" aria-current="page">
                                 <i className="bi bi-bi bi-house"></i>
                                 <span className="ms-3 d-none d-sm-inline">Home</span>
-                            </a>
+                            </Link>
                         </li>
 
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                            <a href='/cars' className="nav-link text-white fs-5" aria-current="page">
+                            <Link to='/cars' className="nav-link text-white fs-5" aria-current="page">
                                 <i className="bi bi-house"></i>
                                 <span className="ms-3 d-none d-sm-inline">Cars</span>
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                            <a href='/' className="nav-link text-white fs-5" aria-current="page">
+                            <Link to='/photos' className="nav-link text-white fs-5" aria-current="page">
                                 <i className="bi bi-table"></i>
-                                <span className="ms-3 d-none d-sm-inline">Orders</span>
-                            </a>
+                                <span className="ms-3 d-none d-sm-inline">Photos</span>
+                            </Link>
                         </li>
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                            <a href='/' className="nav-link text-white fs-5" aria-current="page">
+                            <Link to='/' className="nav-link text-white fs-5" aria-current="page">
                                 <i className="bi bi-grid"></i>
                                 <span className="ms-3 d-none d-sm-inline">Products</span>
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                            <a href='/' className="nav-link text-white fs-5" aria-current="page">
+                            <Link to='/' className="nav-link text-white fs-5" aria-current="page">
                                 <i className="bi bi-people"></i>
                                 <span className="ms-3 d-none d-sm-inline">Costumers</span>
-                            </a>
+                            </Link>
                         </li>
                     </ul>
 
@@ -67,7 +68,7 @@ const SitebarMenu = ({ children }) => {
                     {darkMode ?
                         <div className="nav  flex-column mb-3 mt-sm-0">
                             <div className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                                <div onClick={toggleDarkMode} className="nav-link text-white fs-5" aria-current="page">
+                                <div onClick={toggleDarkMode} className="nav-link text-white fs-5 btn btn-primary" aria-current="page">
                                     <LightModeIcon style={{ color: 'white' }} />
                                     <span className="ms-3 d-none d-sm-inline">Light mode</span>
                                 </div>
@@ -76,7 +77,7 @@ const SitebarMenu = ({ children }) => {
                         :
                         <div className="nav  flex-column mb-3 mt-sm-0">
                             <div className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                                <div onClick={toggleDarkMode} className="nav-link text-white fs-5" aria-current="page">
+                                <div onClick={toggleDarkMode} className="nav-link text-white fs-5 btn btn-primary" aria-current="page">
                                     <DarkModeIcon  style={{ color: 'white' }} />
                                     <span className="ms-3 d-none d-sm-inline">Dark mode</span>
                                 </div>
@@ -87,7 +88,7 @@ const SitebarMenu = ({ children }) => {
 
             </div>
 
-            <div className={`col m-2 main-b-${darkMode ? 'dark' : 'light'}`}>{children}</div>
+            <div className={`col m-2 main-b-${darkMode ? 'dark' : 'light'}`} >{children}</div>
         </div>
     );
 }

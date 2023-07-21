@@ -13,11 +13,11 @@ const CarList = () => {
     const listCars = async () => {
         getAllCars()
             .then((response) => {
-                console.log(response)
+                
                 setCars(response)
 
             }).catch((error) => {
-                alert(`Something went wrong: ${error}`)
+                console.log(`Something went wrong: ${error}`)
             }).finally(() => {
                 console.log('ended obtaining cars')
             })
