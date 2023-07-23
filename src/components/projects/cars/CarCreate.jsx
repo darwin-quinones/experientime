@@ -1,7 +1,8 @@
 import React from 'react';
 
 
-const CarCreate = () => {
+const CarCreate = ({id}) => {
+    console.log('create ', id)
     return (
         <div>
             <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
