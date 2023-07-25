@@ -1,4 +1,6 @@
 import React from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import '../../../css/photos.css'
 
 /**
  *  url of unsflash : https://api.unsplash.com/photos/?client_id=
@@ -639,15 +641,34 @@ const imgs = [
 
 const PhotoList = () => {
     return (
-        <div>
-            Photo List for success
-            {
-                imgs.map((img, index) => (
-                    <div key={index}>
-                        <img alt='img' src={img.urls.regular}></img>
+        <div className='container'>
+
+            <div className='mt-3'>
+                <form className='form_search col-6'>
+
+                    <button>
+                        <SearchIcon />
+                    </button>
+
+                    <div className="div_input mb-3">
+                        <input type="search" class="input_search form-control" placeholder="Search images" />
                     </div>
-                ))
-            }
+                </form>
+
+            </div>
+            <div>
+                Photo List for success
+                {
+                    imgs.map((img, index) => (
+                        <div key={index}>
+                            <img alt='img' src={img.urls.regular}></img>
+                        </div>
+                    ))
+                }
+
+            </div>
+
+
 
         </div>
     );
