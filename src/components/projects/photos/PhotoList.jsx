@@ -1,6 +1,12 @@
 import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import '../../../css/photos.css'
+import boxed from '../../../imgs/boxed.jpg'
+import chair from '../../../imgs/chair.jpg'
+import flowers from '../../../imgs/flowers.jpg'
+import forest from '../../../imgs/forest.jpg'
+import lake from '../../../imgs/lake.jpg'
+import landscapes from '../../../imgs/landscapes.jpg'
 
 /**
  *  url of unsflash : https://api.unsplash.com/photos/?client_id=
@@ -644,32 +650,91 @@ const PhotoList = () => {
         <div className='container'>
 
             <div className='mt-3'>
-                <form className='form_search col-6'>
-
-                    <button>
+                <form className='form_search col-lg-6'>
+                    <button type="submit">
                         <SearchIcon />
                     </button>
-
                     <div className="div_input mb-3">
-                        <input type="search" class="input_search form-control" placeholder="Search images" />
+                        <input id='input_search' type="search" className="input_search " placeholder="Search images" />
                     </div>
                 </form>
-
             </div>
-            <div>
-                Photo List for success
+
+            {/* <div className="container" >
+                <div className="row  mt-3">
+                    <div className="col">
+                        <div className='card'>
+                            <img src={chair} class="card-img-top" alt="..."></img>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className='card'>
+                            <img src={landscapes} class="card-img-top" alt="..."></img>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className='card'>
+                            <img src={forest} class="card-img-top" alt="..."></img>
+                        </div>
+                    </div>
+                </div>
+                <div className="row  mt-3">
+                    <div className="col">
+                        <div className='card'>
+                            <img src={chair} class="card-img-top" alt="..."></img>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className='card'>
+                            <img src={landscapes} class="card-img-top" alt="..."></img>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className='card'>
+                            <img src={forest} class="card-img-top" alt="..."></img>
+                        </div>
+                    </div>
+                </div>
+              
+            </div> */}
+            <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
                 {
                     imgs.map((img, index) => (
-                        <div key={index}>
-                            <img alt='img' src={img.urls.regular}></img>
+                        <div className='div_imgs m-2' data-bs-toggle="modal" data-bs-target="#createCarModal">
+                            <img src={img.urls.regular} className="list_imgs" alt="..."></img>
                         </div>
                     ))
                 }
-
             </div>
 
+            <div className="modal fade" id="createCarModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-xl" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <div className=''>
+                                <h1 className="modal-title fs-5" id="createCarModalLabel">Username </h1>
+                            </div>
+                            <div className=''>
+                                <button type="button" className="btn btn-success" >Descargar</button>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        </div>
+                        <div className="modal-body">
+                            <div className='row'>
+                                <div className='col-xl-12'>
+                                    <center>
+                                        <div className='div_imgs_individual' >
+                                            <img src={landscapes} className="list_imgs" alt="..."></img>
+                                        </div>
+                                    </center>
 
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
