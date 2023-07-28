@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import '../../../css/photos.css'
 import boxed from '../../../imgs/boxed.jpg'
@@ -7,6 +7,7 @@ import flowers from '../../../imgs/flowers.jpg'
 import forest from '../../../imgs/forest.jpg'
 import lake from '../../../imgs/lake.jpg'
 import landscapes from '../../../imgs/landscapes.jpg'
+
 
 /**
  *  url of unsflash : https://api.unsplash.com/photos/?client_id=
@@ -645,7 +646,26 @@ const imgs = [
     }
 ]
 
+
+
+
 const PhotoList = () => {
+
+    const [dataImages, setDataImages] = useState({
+        clickedImage: []
+    })
+
+
+
+    const getIndividualDataImage = (id) => {
+        const dataImage = imgs.find((img) => (img.id === id))
+        setDataImages({ clickedImage: dataImage })
+    }
+
+
+
+
+
     return (
         <div className='container'>
 
@@ -700,7 +720,7 @@ const PhotoList = () => {
             <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
                 {
                     imgs.map((img, index) => (
-                        <div className='div_imgs m-2' data-bs-toggle="modal" data-bs-target="#createCarModal">
+                        <div className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
                             <img src={img.urls.regular} className="list_imgs" alt="..."></img>
                         </div>
                     ))
@@ -709,30 +729,76 @@ const PhotoList = () => {
 
             <div className="modal fade" id="createCarModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <div className=''>
-                                <h1 className="modal-title fs-5" id="createCarModalLabel">Username </h1>
-                            </div>
-                            <div className=''>
-                                <button type="button" className="btn btn-success" >Descargar</button>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                        </div>
-                        <div className="modal-body">
-                            <div className='row'>
-                                <div className='col-xl-12'>
-                                    <center>
-                                        <div className='div_imgs_individual' >
-                                            <img src={landscapes} className="list_imgs" alt="..."></img>
+                    {
+                        dataImages.clickedImage ?
+                            (
+                                <div className="modal-content">
+                                    {
+                                        dataImages.clickedImage.user ?
+                                            (
+                                                <div className="modal-header">
+                                                    <span className='span_user' style={{}}>
+                                                        <img className='rounded-circle' alt='imagen del usuario' src={dataImages.clickedImage.user.profile_image.small}></img>
+                                                        <div className='div_user_info'>
+                                                            <a href={dataImages.clickedImage.user.links.html} className="A_name">{dataImages.clickedImage.user.name} </a>
+                                                            <div>
+                                                                <a href={dataImages.clickedImage.user.links.html} className='A_username'>{dataImages.clickedImage.user.username}</a>
+                                                            </div>
+
+                                                        </div>
+                                                        
+
+                                                    </span>
+                                                    <div className=''>
+                                                        {/* <button type="button" className="btn btn-success" >Descargar</button> */}
+
+                                                        
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-danger">Action</button>
+                                                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <span class="visually-hidden">Toggle Dropdown</span>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                                <li><hr class="dropdown-divider"/></li>
+                                                                <li><a class="dropdown-item" href="#">Separated link</a></li>
+                                                            </ul>
+                                                        </div>
+                                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="modal-header"> No se hay datos</div>
+                                            )
+                                    }
+                                    <div className="modal-body">
+                                        <div className='row'>
+                                            <div className='col-xl-12'>
+                                                <center>
+                                                    <div className='div_imgs_individual' >
+                                                        {
+                                                            dataImages.clickedImage.urls && dataImages.clickedImage.urls.regular ?
+                                                                (
+                                                                    <img src={dataImages.clickedImage.urls.regular} className="list_imgs" alt="..."></img>
+                                                                ) :
+                                                                (
+                                                                    <p>No image data available.</p>
+                                                                )
+                                                        }
+
+                                                    </div>
+                                                </center>
+
+
+                                            </div>
                                         </div>
-                                    </center>
-
-
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
+                            ) :
+                            (<p>No se encontrarons datos</p>)
+                    }
                 </div>
             </div>
         </div>
