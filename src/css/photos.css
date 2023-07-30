@@ -86,6 +86,12 @@
     line-height: 1;
   }
 
+  .div_dropdown {
+    display: flex;
+    align-items: center;
+    gap: 10px
+  }
+
   /* media screen */
 
   @media (max-width: 768px) {
@@ -115,7 +121,7 @@
       margin-bottom: 10px;
     }
     .div_imgs_individual {
-      width: 50%;
+      width: 45%;
       margin-bottom: 10px;
     }
 }

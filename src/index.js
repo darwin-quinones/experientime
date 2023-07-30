@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import $ from 'jquery';
 import Popper from 'popper.js';
+import "../node_modules/bootstrap/js/dist/dropdown.js"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

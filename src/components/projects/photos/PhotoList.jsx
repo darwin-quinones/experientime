@@ -7,6 +7,9 @@ import flowers from '../../../imgs/flowers.jpg'
 import forest from '../../../imgs/forest.jpg'
 import lake from '../../../imgs/lake.jpg'
 import landscapes from '../../../imgs/landscapes.jpg'
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 
 /**
@@ -746,28 +749,28 @@ const PhotoList = () => {
                                                             </div>
 
                                                         </div>
-                                                        
+
 
                                                     </span>
-                                                    <div className=''>
-                                                        {/* <button type="button" className="btn btn-success" >Descargar</button> */}
+                                                    <div className='div_dropdown' style={{}}>
 
-                                                        
-                                                        <div class="btn-group">
-                                                            <button type="button" class="btn btn-danger">Action</button>
-                                                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <span class="visually-hidden">Toggle Dropdown</span>
-                                                            </button>
-                                                            <ul class="dropdown-menu">
-                                                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                                                <li><hr class="dropdown-divider"/></li>
-                                                                <li><a class="dropdown-item" href="#">Separated link</a></li>
-                                                            </ul>
-                                                        </div>
+                                                        <Dropdown as={ButtonGroup}>
+                                                            <Button variant="success">Descargar</Button>
+
+                                                            <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
+
+                                                            <Dropdown.Menu align="end">
+                                                                <Dropdown.Item href="#/action-1">Pequeño (640 x 1019)</Dropdown.Item>
+                                                                <Dropdown.Item href="#/action-2">Mediano (1920 x 3058)</Dropdown.Item>
+                                                                <Dropdown.Item href="#/action-3">Largo (2400 x 3822)</Dropdown.Item>
+                                                                <Dropdown.Divider />
+                                                                <Dropdown.Item eventKey="4">Tamaño original (3240 x 5161)</Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
                                                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        {/* <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
                                                     </div>
+
                                                 </div>
                                             ) : (
                                                 <div className="modal-header"> No se hay datos</div>
