@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import ReactDOM from "react-dom";
+import axios from "axios";
+import { unsflashParams } from '../../../services/unsflashParams';
 import SearchIcon from '@mui/icons-material/Search';
 import '../../../css/photos.css'
 import boxed from '../../../imgs/boxed.jpg'
@@ -15,6 +18,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 /**
  *  url of unsflash : https://api.unsplash.com/photos/?client_id=
  */
+
 const imgs = [
     {
         "id": "vgWyuNwjEa4",
@@ -666,6 +670,36 @@ const PhotoList = () => {
     }
 
 
+    const downloadNormalImage = async (imgUrl) => {
+        console.log('clickedImage: ', dataImages.clickedImage)
+        const imageURL = imgUrl + unsflashParams
+        const imageName = dataImages.clickedImage.user.username + "-" + dataImages.clickedImage.user.id + "-unsflash.jpg" 
+
+        // first have to get the response(another url) when fetching original imgUrl
+        axios.get(imageURL)
+        .then((response) => {
+            // Then convert url and download it
+            axios.get(response.data.url, { responseType: 'arraybuffer' })
+            .then(response => {
+                const blob = new Blob([response.data], { type: 'image/jpeg' });
+                const url = window.URL.createObjectURL(blob);
+
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', imageName);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                console.error('Error downloading image:', error);
+            });
+        }).catch(error => {
+            console.error('Error downloading image:', error);
+        });
+    }
+
+
 
 
 
@@ -723,7 +757,7 @@ const PhotoList = () => {
             <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
                 {
                     imgs.map((img, index) => (
-                        <div className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
+                        <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
                             <img src={img.urls.regular} className="list_imgs" alt="..."></img>
                         </div>
                     ))
@@ -755,7 +789,7 @@ const PhotoList = () => {
                                                     <div className='div_dropdown' style={{}}>
 
                                                         <Dropdown as={ButtonGroup}>
-                                                            <Button variant="success">Descargar</Button>
+                                                            <Button onClick={() => downloadNormalImage(dataImages.clickedImage.links.download_location)} variant="success">Descargar</Button>
 
                                                             <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
 

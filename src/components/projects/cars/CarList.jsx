@@ -91,7 +91,6 @@ const CarList = () => {
     const listCars = async () => {
         getAllCars()
             .then((response) => {
-
                 setCars(response)
             }).catch((error) => {
                 console.log(`Something went wrong: ${error}`)
@@ -99,6 +98,36 @@ const CarList = () => {
                 console.log('ended obtaining cars')
             })
     }
+
+    const API_CARS = [
+        {
+            "id": 21,
+            "nombre": "Spark GT",
+            "modelo": "Modelo LT",
+            "marca": "Chevrolet",
+            "pais": "Colombia",
+            "fechaCreate": "2022-10-26",
+            "fechaUpdate": "2022-10-27"
+        },
+        {
+            "id": 22,
+            "nombre": "Toyota TXL",
+            "modelo": "Modelo Diesel",
+            "marca": "Toyota",
+            "pais": "Japan",
+            "fechaCreate": "2022-10-26",
+            "fechaUpdate": null
+        },
+        {
+            "id": 23,
+            "nombre": "Mercedes Benz AGM",
+            "modelo": "Modelo Turbo",
+            "marca": "Mercedes Benz",
+            "pais": "Germany",
+            "fechaCreate": "2022-10-26",
+            "fechaUpdate": null
+        }
+    ]
 
     var c = 1
     const minLength = 3; const maxLength = 30
