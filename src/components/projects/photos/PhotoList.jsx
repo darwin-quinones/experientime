@@ -671,32 +671,32 @@ const PhotoList = () => {
 
 
     const downloadNormalImage = async (imgUrl) => {
-        console.log('clickedImage: ', dataImages.clickedImage)
+        
         const imageURL = imgUrl + unsflashParams
-        const imageName = dataImages.clickedImage.user.username + "-" + dataImages.clickedImage.user.id + "-unsflash.jpg" 
+        const imageName = dataImages.clickedImage.user.username + "-" + dataImages.clickedImage.user.id + "-unsflash.jpg"
 
         // first have to get the response(another url) when fetching original imgUrl
         axios.get(imageURL)
-        .then((response) => {
-            // Then convert url and download it
-            axios.get(response.data.url, { responseType: 'arraybuffer' })
-            .then(response => {
-                const blob = new Blob([response.data], { type: 'image/jpeg' });
-                const url = window.URL.createObjectURL(blob);
+            .then((response) => {
+                // Then convert url and download it
+                axios.get(response.data.url, { responseType: 'arraybuffer' })
+                    .then(response => {
+                        const blob = new Blob([response.data], { type: 'image/jpeg' });
+                        const url = window.URL.createObjectURL(blob);
 
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', imageName);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            })
-            .catch(error => {
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', imageName);
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    })
+                    .catch(error => {
+                        console.error('Error downloading image:', error);
+                    });
+            }).catch(error => {
                 console.error('Error downloading image:', error);
             });
-        }).catch(error => {
-            console.error('Error downloading image:', error);
-        });
     }
 
 
@@ -783,28 +783,13 @@ const PhotoList = () => {
                                                             </div>
 
                                                         </div>
-
-
                                                     </span>
                                                     <div className='div_dropdown' style={{}}>
-
-                                                        <Dropdown as={ButtonGroup}>
-                                                            <Button onClick={() => downloadNormalImage(dataImages.clickedImage.links.download_location)} variant="success">Descargar</Button>
-
-                                                            <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
-
-                                                            <Dropdown.Menu align="end">
-                                                                <Dropdown.Item href="#/action-1">Pequeño (640 x 1019)</Dropdown.Item>
-                                                                <Dropdown.Item href="#/action-2">Mediano (1920 x 3058)</Dropdown.Item>
-                                                                <Dropdown.Item href="#/action-3">Largo (2400 x 3822)</Dropdown.Item>
-                                                                <Dropdown.Divider />
-                                                                <Dropdown.Item eventKey="4">Tamaño original (3240 x 5161)</Dropdown.Item>
-                                                            </Dropdown.Menu>
-                                                        </Dropdown>
+                                                        <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(dataImages.clickedImage.links.download_location)}>
+                                                            Descargar
+                                                        </button>                             
                                                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        {/* <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> */}
                                                     </div>
-
                                                 </div>
                                             ) : (
                                                 <div className="modal-header"> No se hay datos</div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllCars } from '../../../services/fetchCRUDCarService';
+import { getAllCars, axiosCar } from '../../../services/fetchCRUDCarService';
 import { axiosCountry } from '../../../services/axiosCountryService';
 import * as Alerts from '../alerts/Alerts'
 import CarCreate from './CarCreate.jsx';
@@ -61,7 +61,12 @@ const CarList = () => {
     };
 
     const sendData = (data) => {
-        console.log('data to sent: ', data)
+        axiosCar.post('/cars', data)
+        .then((response) => {
+            console.log(response)
+        })
+        .catch((error) => console.log(error))
+        
         // Send the form data to the server or perform other actions
         // You can use fetch, Axios, or any other library to make API calls to the server.
     };
@@ -94,9 +99,10 @@ const CarList = () => {
                 setCars(response)
             }).catch((error) => {
                 console.log(`Something went wrong: ${error}`)
-            }).finally(() => {
-                console.log('ended obtaining cars')
             })
+            // .finally(() => {
+            //     console.log('ended obtaining cars')
+            // })
     }
 
     const API_CARS = [
@@ -132,13 +138,9 @@ const CarList = () => {
     var c = 1
     const minLength = 3; const maxLength = 30
     return (
-
         <div>
             <div className="card table table-response">
-
                 <div className="card-header table table-responsive" style={{ backgroundColor: "#33527F", float: 'right' }}>
-
-
                     <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#createCarModal">
                         Crear Carro
                     </button>
@@ -192,7 +194,6 @@ const CarList = () => {
                         </tbody>
                     </table>
                 </div>
-
             </div>
             {/* Modals */}
             <div className="modal fade" id="createCarModal" tabIndex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
@@ -250,10 +251,10 @@ const CarList = () => {
                                         onChange={handleChange}
                                         name="pais" id="pais"
                                         aria-label="Default select example">
-                                        <option selected>Selecciona un país</option>
+                                        <option value=''>Selecciona un país</option>
                                         {
-                                            cauntries.map((country) => (
-                                                <option value={country.common}>{country.common}</option>
+                                            cauntries.map((country, index) => (
+                                                <option key={index} value={country.common}>{country.common}</option>
                                             ))
                                         }
                                     </select>
