@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from "react-dom";
 import axios from "axios";
+import { axiosFhoto } from '../../../services/axiosFhotoService';
 import { unsflashParams } from '../../../services/unsflashParams';
 import SearchIcon from '@mui/icons-material/Search';
 import '../../../css/photos.css'
@@ -659,21 +660,49 @@ const imgs = [
 const PhotoList = () => {
 
     const [dataImages, setDataImages] = useState({
-        clickedImage: []
+        obtainedImages: [],
+        searchedImage: [],
+        inputSearch : '',
     })
 
-
+    const getIndividualDataImage1 = (id) => {
+        const obj = {
+            "id": "vgWyuNwjEa4",
+            "slug": "vgWyuNwjEa4",
+            "created_at": "2023-06-07T17:41:05Z",
+            "updated_at": "2023-08-02T20:38:45Z",
+            "promoted_at": "2023-07-21T17:48:01Z"}
+            setDataImages({searchedImage: obj})
+            
+    }
+    console.log('searchedImage: ', dataImages.searchedImage)
 
     const getIndividualDataImage = (id) => {
-        const dataImage = imgs.find((img) => (img.id === id))
-        setDataImages({ clickedImage: dataImage })
+        // const dataImage = imgs.find((img) => (img.id === id))
+        // setDataImages({ searchedImage: dataImage })
+        //https://api.unsplash.com/photos/vgWyuNwjEa4?client_id=mP3dmiXzCDzmwwekbsaz24jyWitaHbj7dFdcNY-vtHk
+        console.log('id img: ' + id)
+        axiosFhoto.get(`/photos/${id}?${unsflashParams}`)
+        .then((response) => {
+            console.log('response 1: ',response)
+            console.log('response 2: ',response.data)
+            setDataImages({searchedImage: response.data})
+            console.log('searchedImage: ', dataImages.searchedImage)
+            // if(response.status === 200){
+            //     if(response.data && response.data.length > 0){
+            //         // set fhoto
+            //         // setDataImages({searchedImage: response.data[0]})
+            //     }
+            // }
+        })
+        console.log('searchedImage: ', dataImages.searchedImage)
     }
 
 
     const downloadNormalImage = async (imgUrl) => {
         
         const imageURL = imgUrl + unsflashParams
-        const imageName = dataImages.clickedImage.user.username + "-" + dataImages.clickedImage.user.id + "-unsflash.jpg"
+        const imageName = dataImages.searchedImage.user.username + "-" + dataImages.searchedImage.user.id + "-unsflash.jpg"
 
         // first have to get the response(another url) when fetching original imgUrl
         axios.get(imageURL)
@@ -699,20 +728,55 @@ const PhotoList = () => {
             });
     }
 
+    
 
+    const handleInputChange = (e) => {
+        // set data for inputSearch
+        setDataImages({
+            ...dataImages,
+            [e.target.name]: e.target.value
+        })
+    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        searchImages(dataImages.inputSearch)
+        
+    }
 
+    const searchImages = (prompt) => {
+        // https://api.unsplash.com/search/photos?page=1&query=office&client_id=mP3dmiXzCDzmwwekbsaz24jyWitaHbj7dFdcNY-vtHk
+        axiosFhoto.get(`/search/photos?page=1&query=${prompt}&${unsflashParams}`)
+        .then((response) =>{
+            if(response.status === 200){
+                if(response.data.results && response.data.results.length > 0){
+                    // set fhotos
+                    setDataImages({obtainedImages: response.data.results})
+                }
+            }
+            console.log('estatus: ', response)
+            console.log('persuit: ', response.data.results)
+        })
+        .catch((error) => console.log(error))
+    }
 
+    useEffect(() =>{
+        console.log('searchedImage useEffect: ', dataImages.searchedImage)
+    })
 
     return (
         <div className='container'>
-
             <div className='mt-3'>
-                <form className='form_search col-lg-6'>
+            <button type='button' className='btn btn-success' onClick={getIndividualDataImage1}>
+                prueba de buscar
+            </button>
+                <form onSubmit={handleSubmit} className='form_search col-lg-6'>
                     <button type="submit">
                         <SearchIcon />
                     </button>
                     <div className="div_input mb-3">
-                        <input id='input_search' type="search" className="input_search " placeholder="Search images" />
+                        <input id='input_search' onChange={handleInputChange} name="inputSearch" value={dataImages.inputSearch}  
+                        type="search" className="input_search " 
+                        placeholder="Search images" />
                     </div>
                 </form>
             </div>
@@ -754,7 +818,7 @@ const PhotoList = () => {
                 </div>
               
             </div> */}
-            <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
+            {/* <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
                 {
                     imgs.map((img, index) => (
                         <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
@@ -762,30 +826,44 @@ const PhotoList = () => {
                         </div>
                     ))
                 }
+            </div> */}
+
+            {/* SEARCHED IMAGES  */}
+            <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
+                {
+                    dataImages.obtainedImages ? 
+                   (
+                    dataImages.obtainedImages.map((img, index) => (
+                        <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
+                            <img src={img.urls.regular} className="list_imgs" alt="..."></img>
+                        </div>
+                    ))
+                   ): ""
+                }
             </div>
 
             <div className="modal fade" id="createCarModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl" role="document">
                     {
-                        dataImages.clickedImage ?
+                        dataImages.searchedImage ?
                             (
                                 <div className="modal-content">
                                     {
-                                        dataImages.clickedImage.user ?
+                                        dataImages.searchedImage.user ?
                                             (
                                                 <div className="modal-header">
                                                     <span className='span_user' style={{}}>
-                                                        <img className='rounded-circle' alt='imagen del usuario' src={dataImages.clickedImage.user.profile_image.small}></img>
+                                                        <img className='rounded-circle' alt='imagen del usuario' src={dataImages.searchedImage.user.profile_image.small}></img>
                                                         <div className='div_user_info'>
-                                                            <a href={dataImages.clickedImage.user.links.html} className="A_name">{dataImages.clickedImage.user.name} </a>
+                                                            <a href={dataImages.searchedImage.user.links.html} className="A_name">{dataImages.searchedImage.user.name} </a>
                                                             <div>
-                                                                <a href={dataImages.clickedImage.user.links.html} className='A_username'>{dataImages.clickedImage.user.username}</a>
+                                                                <a href={dataImages.searchedImage.user.links.html} className='A_username'>{dataImages.searchedImage.user.username}</a>
                                                             </div>
 
                                                         </div>
                                                     </span>
                                                     <div className='div_dropdown' style={{}}>
-                                                        <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(dataImages.clickedImage.links.download_location)}>
+                                                        <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(dataImages.searchedImage.links.download_location)}>
                                                             Descargar
                                                         </button>                             
                                                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -801,9 +879,9 @@ const PhotoList = () => {
                                                 <center>
                                                     <div className='div_imgs_individual' >
                                                         {
-                                                            dataImages.clickedImage.urls && dataImages.clickedImage.urls.regular ?
+                                                            dataImages.searchedImage.urls && dataImages.searchedImage.urls.regular ?
                                                                 (
-                                                                    <img src={dataImages.clickedImage.urls.regular} className="list_imgs" alt="..."></img>
+                                                                    <img src={dataImages.searchedImage.urls.regular} className="list_imgs" alt="..."></img>
                                                                 ) :
                                                                 (
                                                                     <p>No image data available.</p>

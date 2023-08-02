@@ -1,1 +1,1 @@
-export const unsflashParams = "&client_id=mP3dmiXzCDzmwwekbsaz24jyWitaHbj7dFdcNY-vtHk"
+export const unsflashParams = "client_id=mP3dmiXzCDzmwwekbsaz24jyWitaHbj7dFdcNY-vtHk"

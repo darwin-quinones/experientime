@@ -36,13 +36,13 @@ const SitebarMenu = ({ children }) => {
 
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
                             <Link to='/cars' className="nav-link text-white fs-5" aria-current="page">
-                                <i className="bi bi-house"></i>
+                                <i className="bi bi-car-front-fill"></i>
                                 <span className="ms-3 d-none d-sm-inline">Cars</span>
                             </Link>
                         </li>
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
                             <Link to='/photos' className="nav-link text-white fs-5" aria-current="page">
-                                <i className="bi bi-table"></i>
+                                <i className="bi bi-images"></i>
                                 <span className="ms-3 d-none d-sm-inline">Photos</span>
                             </Link>
                         </li>
