@@ -662,19 +662,29 @@ const PhotoList = () => {
     const [dataImages, setDataImages] = useState({
         obtainedImages: [],
         searchedImage: [],
-        inputSearch : '',
+        inputSearch: '',
     })
 
-    const getIndividualDataImage1 = (id) => {
-        const obj = {
-            "id": "vgWyuNwjEa4",
-            "slug": "vgWyuNwjEa4",
-            "created_at": "2023-06-07T17:41:05Z",
-            "updated_at": "2023-08-02T20:38:45Z",
-            "promoted_at": "2023-07-21T17:48:01Z"}
-            setDataImages({searchedImage: obj})
-            
-    }
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    // const getIndividualDataImage1 = (id) => {
+    //     const obj = {
+    //         "id": "vgWyuNwjEa4",
+    //         "slug": "vgWyuNwjEa4",
+    //         "created_at": "2023-06-07T17:41:05Z",
+    //         "updated_at": "2023-08-02T20:38:45Z",
+    //         "promoted_at": "2023-07-21T17:48:01Z"}
+    //         setDataImages({searchedImage: obj})
+
+    // }
     console.log('searchedImage: ', dataImages.searchedImage)
 
     const getIndividualDataImage = (id) => {
@@ -683,25 +693,25 @@ const PhotoList = () => {
         //https://api.unsplash.com/photos/vgWyuNwjEa4?client_id=mP3dmiXzCDzmwwekbsaz24jyWitaHbj7dFdcNY-vtHk
         console.log('id img: ' + id)
         axiosFhoto.get(`/photos/${id}?${unsflashParams}`)
-        .then((response) => {
-            console.log('response 1: ',response)
-            console.log('response 2: ',response.data)
-            setDataImages({searchedImage: response.data})
-            console.log('searchedImage: ', dataImages.searchedImage)
-            // if(response.status === 200){
-            //     if(response.data && response.data.length > 0){
-            //         // set fhoto
-            //         // setDataImages({searchedImage: response.data[0]})
-            //     }
-            // }
-        })
+            .then((response) => {
+                // console.log('response 1: ',response)
+                // console.log('response 2: ',response.data)
+                setDataImages({ searchedImage: response.data })
+                console.log('searchedImage: ', dataImages.searchedImage)
+                // if(response.status === 200){
+                //     if(response.data && response.data.length > 0){
+                //         // set fhoto
+                //         // setDataImages({searchedImage: response.data[0]})
+                //     }
+                // }
+            })
         console.log('searchedImage: ', dataImages.searchedImage)
     }
 
 
     const downloadNormalImage = async (imgUrl) => {
-        
-        const imageURL = imgUrl + unsflashParams
+
+        const imageURL = imgUrl + '&' + unsflashParams
         const imageName = dataImages.searchedImage.user.username + "-" + dataImages.searchedImage.user.id + "-unsflash.jpg"
 
         // first have to get the response(another url) when fetching original imgUrl
@@ -728,7 +738,7 @@ const PhotoList = () => {
             });
     }
 
-    
+
 
     const handleInputChange = (e) => {
         // set data for inputSearch
@@ -740,43 +750,77 @@ const PhotoList = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         searchImages(dataImages.inputSearch)
-        
+
     }
 
     const searchImages = (prompt) => {
         // https://api.unsplash.com/search/photos?page=1&query=office&client_id=mP3dmiXzCDzmwwekbsaz24jyWitaHbj7dFdcNY-vtHk
         axiosFhoto.get(`/search/photos?page=1&query=${prompt}&${unsflashParams}`)
-        .then((response) =>{
-            if(response.status === 200){
-                if(response.data.results && response.data.results.length > 0){
-                    // set fhotos
-                    setDataImages({obtainedImages: response.data.results})
+            .then((response) => {
+                if (response.status === 200) {
+                    if (response.data.results && response.data.results.length > 0) {
+                        // set fhotos
+                        setDataImages({ obtainedImages: response.data.results })
+                    }
                 }
-            }
-            console.log('estatus: ', response)
-            console.log('persuit: ', response.data.results)
-        })
-        .catch((error) => console.log(error))
+                console.log('estatus: ', response)
+                console.log('persuit: ', response.data.results)
+            })
+            .catch((error) => console.log(error))
     }
 
-    useEffect(() =>{
-        console.log('searchedImage useEffect: ', dataImages.searchedImage)
-    })
+    // useEffect(() =>{
+    //     console.log('searchedImage useEffect: ', dataImages.searchedImage)
+    // })
+
+
 
     return (
         <div className='container'>
+            {/* modal open example */}
+
+            <div>
+                <button onClick={openModal} className="btn btn-primary">
+                    Open Modal
+                </button>
+
+                {/* Your Modal */}
+                <div className={`modal ${isModalOpen ? 'show' : ''}`} tabIndex="-1" style={{ display: isModalOpen ? 'block' : 'none' }}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Modal Title</h5>
+                                <button type="button" className="btn-close" onClick={closeModal} aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                                {/* Modal content */}
+                                <p>This is the modal content.</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                                    Close
+                                </button>
+                                <button type="button" className="btn btn-primary">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className='mt-3'>
-            <button type='button' className='btn btn-success' onClick={getIndividualDataImage1}>
+                {/* <button type='button' className='btn btn-success' onClick={getIndividualDataImage1}>
                 prueba de buscar
-            </button>
+            </button> */}
                 <form onSubmit={handleSubmit} className='form_search col-lg-6'>
                     <button type="submit">
                         <SearchIcon />
                     </button>
                     <div className="div_input mb-3">
-                        <input id='input_search' onChange={handleInputChange} name="inputSearch" value={dataImages.inputSearch}  
-                        type="search" className="input_search " 
-                        placeholder="Search images" />
+                        <input id='input_search' onChange={handleInputChange} name="inputSearch" value={dataImages.inputSearch}
+                            type="search" className="input_search "
+                            placeholder="Search images" />
                     </div>
                 </form>
             </div>
@@ -831,14 +875,14 @@ const PhotoList = () => {
             {/* SEARCHED IMAGES  */}
             <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
                 {
-                    dataImages.obtainedImages ? 
-                   (
-                    dataImages.obtainedImages.map((img, index) => (
-                        <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
-                            <img src={img.urls.regular} className="list_imgs" alt="..."></img>
-                        </div>
-                    ))
-                   ): ""
+                    dataImages.obtainedImages ?
+                        (
+                            dataImages.obtainedImages.map((img, index) => (
+                                <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
+                                    <img src={img.urls.regular} className="list_imgs" alt="..."></img>
+                                </div>
+                            ))
+                        ) : ""
                 }
             </div>
 
@@ -865,7 +909,7 @@ const PhotoList = () => {
                                                     <div className='div_dropdown' style={{}}>
                                                         <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(dataImages.searchedImage.links.download_location)}>
                                                             Descargar
-                                                        </button>                             
+                                                        </button>
                                                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                 </div>
