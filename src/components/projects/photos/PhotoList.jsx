@@ -945,6 +945,66 @@ const PhotoList = () => {
                     }
                 </div>
             </div>
+
+            {/* <div className="modal fade" id="createCarModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-xl" role="document">
+                    {
+                        dataImages.searchedImage ?
+                            (
+                                <div className="modal-content">
+                                    {
+                                        dataImages.searchedImage.user ?
+                                            (
+                                                <div className="modal-header">
+                                                    <span className='span_user' style={{}}>
+                                                        <img className='rounded-circle' alt='imagen del usuario' src={dataImages.searchedImage.user.profile_image.small}></img>
+                                                        <div className='div_user_info'>
+                                                            <a href={dataImages.searchedImage.user.links.html} className="A_name">{dataImages.searchedImage.user.name} </a>
+                                                            <div>
+                                                                <a href={dataImages.searchedImage.user.links.html} className='A_username'>{dataImages.searchedImage.user.username}</a>
+                                                            </div>
+
+                                                        </div>
+                                                    </span>
+                                                    <div className='div_dropdown' style={{}}>
+                                                        <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(dataImages.searchedImage.links.download_location)}>
+                                                            Descargar
+                                                        </button>
+                                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="modal-header"> No se hay datos</div>
+                                            )
+                                    }
+                                    <div className="modal-body">
+                                        <div className='row'>
+                                            <div className='col-xl-12'>
+                                                <center>
+                                                    <div className='div_imgs_individual' >
+                                                        {
+                                                            dataImages.searchedImage.urls && dataImages.searchedImage.urls.regular ?
+                                                                (
+                                                                    <img src={dataImages.searchedImage.urls.regular} className="list_imgs" alt="..."></img>
+                                                                ) :
+                                                                (
+                                                                    <p>No image data available.</p>
+                                                                )
+                                                        }
+
+                                                    </div>
+                                                </center>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) :
+                            (<p>No se encontrarons datos</p>)
+                    }
+                </div>
+            </div> */}
         </div>
     );
 }
