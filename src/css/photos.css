@@ -92,6 +92,14 @@
     gap: 10px
   }
 
+  /* MODALS */
+
+  .modal-backdrop {
+    background-color: transparent;
+  }
+
+  
+
   /* media screen */
 
   @media (max-width: 768px) {

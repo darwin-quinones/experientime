@@ -660,10 +660,12 @@ const imgs = [
 const PhotoList = () => {
 
     const [dataImages, setDataImages] = useState({
+        initialImages: [],
         obtainedImages: [],
-        searchedImage: [],
+        // searchedImage: [],
         inputSearch: '',
     })
+    const [clickedImage, setClickedImage] = useState(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -675,29 +677,19 @@ const PhotoList = () => {
         setIsModalOpen(false);
     };
 
-    // const getIndividualDataImage1 = (id) => {
-    //     const obj = {
-    //         "id": "vgWyuNwjEa4",
-    //         "slug": "vgWyuNwjEa4",
-    //         "created_at": "2023-06-07T17:41:05Z",
-    //         "updated_at": "2023-08-02T20:38:45Z",
-    //         "promoted_at": "2023-07-21T17:48:01Z"}
-    //         setDataImages({searchedImage: obj})
-
-    // }
-    console.log('searchedImage: ', dataImages.searchedImage)
 
     const getIndividualDataImage = (id) => {
         // const dataImage = imgs.find((img) => (img.id === id))
         // setDataImages({ searchedImage: dataImage })
         //https://api.unsplash.com/photos/vgWyuNwjEa4?client_id=mP3dmiXzCDzmwwekbsaz24jyWitaHbj7dFdcNY-vtHk
-        console.log('id img: ' + id)
+
         axiosFhoto.get(`/photos/${id}?${unsflashParams}`)
             .then((response) => {
+                setClickedImage(response.data);
                 // console.log('response 1: ',response)
                 // console.log('response 2: ',response.data)
-                setDataImages({ searchedImage: response.data })
-                console.log('searchedImage: ', dataImages.searchedImage)
+                // setDataImages({ searchedImage: response.data })
+
                 // if(response.status === 200){
                 //     if(response.data && response.data.length > 0){
                 //         // set fhoto
@@ -705,7 +697,8 @@ const PhotoList = () => {
                 //     }
                 // }
             })
-        console.log('searchedImage: ', dataImages.searchedImage)
+        console.log('dataImages.obtainedImages: ', dataImages.obtainedImages)
+        setDataImages({ obtainedImages: dataImages.obtainedImages })
     }
 
 
@@ -763,15 +756,25 @@ const PhotoList = () => {
                         setDataImages({ obtainedImages: response.data.results })
                     }
                 }
-                console.log('estatus: ', response)
-                console.log('persuit: ', response.data.results)
             })
             .catch((error) => console.log(error))
     }
 
-    // useEffect(() =>{
-    //     console.log('searchedImage useEffect: ', dataImages.searchedImage)
-    // })
+    const getInitialImages = () => {
+        axiosFhoto.get(`/photos/?${unsflashParams}`)
+            .then((response) => {
+                setDataImages({ initialImages: response.data })
+            })
+            .catch((error) => console.log(error))
+    }
+
+    useEffect(() => {
+        getInitialImages()
+        console.log('Component did mount')
+        console.log('dataImages.initialImage: ', dataImages.initialImages)
+        console.log('dataImages.obtainedImages: ', dataImages.obtainedImages)
+        
+    }, [])
 
 
 
@@ -779,35 +782,6 @@ const PhotoList = () => {
         <div className='container'>
             {/* modal open example */}
 
-            <div>
-                <button onClick={openModal} className="btn btn-primary">
-                    Open Modal
-                </button>
-
-                {/* Your Modal */}
-                <div className={`modal ${isModalOpen ? 'show' : ''}`} tabIndex="-1" style={{ display: isModalOpen ? 'block' : 'none' }}>
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Modal Title</h5>
-                                <button type="button" className="btn-close" onClick={closeModal} aria-label="Close"></button>
-                            </div>
-                            <div className="modal-body">
-                                {/* Modal content */}
-                                <p>This is the modal content.</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={closeModal}>
-                                    Close
-                                </button>
-                                <button type="button" className="btn btn-primary">
-                                    Save Changes
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div className='mt-3'>
                 {/* <button type='button' className='btn btn-success' onClick={getIndividualDataImage1}>
@@ -862,15 +836,19 @@ const PhotoList = () => {
                 </div>
               
             </div> */}
-            {/* <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
+            <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
                 {
-                    imgs.map((img, index) => (
-                        <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
-                            <img src={img.urls.regular} className="list_imgs" alt="..."></img>
-                        </div>
-                    ))
+                    dataImages.initialImages ?
+                        (
+                            dataImages.initialImages.map((img, index) => (
+                                <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
+                                    <img src={img.urls.regular} className="list_imgs" alt="..."></img>
+                                </div>
+                            ))
+                        ) :
+                        ""
                 }
-            </div> */}
+            </div>
 
             {/* SEARCHED IMAGES  */}
             <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
@@ -889,25 +867,25 @@ const PhotoList = () => {
             <div className="modal fade" id="createCarModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl" role="document">
                     {
-                        dataImages.searchedImage ?
+                        clickedImage ?
                             (
                                 <div className="modal-content">
                                     {
-                                        dataImages.searchedImage.user ?
+                                        clickedImage.user ?
                                             (
                                                 <div className="modal-header">
                                                     <span className='span_user' style={{}}>
-                                                        <img className='rounded-circle' alt='imagen del usuario' src={dataImages.searchedImage.user.profile_image.small}></img>
+                                                        <img className='rounded-circle' alt='imagen del usuario' src={clickedImage.user.profile_image.small}></img>
                                                         <div className='div_user_info'>
-                                                            <a href={dataImages.searchedImage.user.links.html} className="A_name">{dataImages.searchedImage.user.name} </a>
+                                                            <a href={clickedImage.user.links.html} className="A_name">{clickedImage.user.name} </a>
                                                             <div>
-                                                                <a href={dataImages.searchedImage.user.links.html} className='A_username'>{dataImages.searchedImage.user.username}</a>
+                                                                <a href={clickedImage.user.links.html} className='A_username'>{clickedImage.user.username}</a>
                                                             </div>
 
                                                         </div>
                                                     </span>
                                                     <div className='div_dropdown' style={{}}>
-                                                        <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(dataImages.searchedImage.links.download_location)}>
+                                                        <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(clickedImage.links.download_location)}>
                                                             Descargar
                                                         </button>
                                                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -923,9 +901,9 @@ const PhotoList = () => {
                                                 <center>
                                                     <div className='div_imgs_individual' >
                                                         {
-                                                            dataImages.searchedImage.urls && dataImages.searchedImage.urls.regular ?
+                                                            clickedImage.urls && clickedImage.urls.regular ?
                                                                 (
-                                                                    <img src={dataImages.searchedImage.urls.regular} className="list_imgs" alt="..."></img>
+                                                                    <img src={clickedImage.urls.regular} className="list_imgs" alt="..."></img>
                                                                 ) :
                                                                 (
                                                                     <p>No image data available.</p>
