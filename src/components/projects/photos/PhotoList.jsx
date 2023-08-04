@@ -665,8 +665,11 @@ const PhotoList = () => {
         // searchedImage: [],
         inputSearch: '',
     })
-    const [clickedImage, setClickedImage] = useState(null);
-
+    const [initialImages, setInitialImages] = useState(null)
+    const [obtainedImages, setObtainedImages] = useState(null)
+    const [clickedImage, setClickedImage] = useState(null)
+    const [inputSearch, setInputSearch] = useState('')
+    
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => {
@@ -697,15 +700,15 @@ const PhotoList = () => {
                 //     }
                 // }
             })
-        console.log('dataImages.obtainedImages: ', dataImages.obtainedImages)
-        setDataImages({ obtainedImages: dataImages.obtainedImages })
+        //console.log('dataImages.obtainedImages: ', dataImages.obtainedImages)
+        //setDataImages({ obtainedImages: dataImages.obtainedImages })
     }
 
 
     const downloadNormalImage = async (imgUrl) => {
 
         const imageURL = imgUrl + '&' + unsflashParams
-        const imageName = dataImages.searchedImage.user.username + "-" + dataImages.searchedImage.user.id + "-unsflash.jpg"
+        const imageName = clickedImage.user.username + "-" + clickedImage.user.id + "-unsflash.jpg"
 
         // first have to get the response(another url) when fetching original imgUrl
         axios.get(imageURL)
@@ -735,14 +738,15 @@ const PhotoList = () => {
 
     const handleInputChange = (e) => {
         // set data for inputSearch
-        setDataImages({
-            ...dataImages,
-            [e.target.name]: e.target.value
-        })
+        setInputSearch(e.target.value);
+        // setDataImages({
+        //     ...dataImages,
+        //     [e.target.name]: e.target.value
+        // })
     }
     const handleSubmit = (e) => {
         e.preventDefault();
-        searchImages(dataImages.inputSearch)
+        searchImages(inputSearch)
 
     }
 
@@ -753,7 +757,7 @@ const PhotoList = () => {
                 if (response.status === 200) {
                     if (response.data.results && response.data.results.length > 0) {
                         // set fhotos
-                        setDataImages({ obtainedImages: response.data.results })
+                        setObtainedImages(response.data.results)
                     }
                 }
             })
@@ -763,16 +767,16 @@ const PhotoList = () => {
     const getInitialImages = () => {
         axiosFhoto.get(`/photos/?${unsflashParams}`)
             .then((response) => {
-                setDataImages({ initialImages: response.data })
+                setInitialImages(response.data)
             })
             .catch((error) => console.log(error))
     }
 
     useEffect(() => {
         getInitialImages()
-        console.log('Component did mount')
-        console.log('dataImages.initialImage: ', dataImages.initialImages)
-        console.log('dataImages.obtainedImages: ', dataImages.obtainedImages)
+        // console.log('Component did mount')
+        // console.log('dataImages.initialImage: ', dataImages.initialImages)
+        // console.log('dataImages.obtainedImages: ', dataImages.obtainedImages)
         
     }, [])
 
@@ -792,7 +796,7 @@ const PhotoList = () => {
                         <SearchIcon />
                     </button>
                     <div className="div_input mb-3">
-                        <input id='input_search' onChange={handleInputChange} name="inputSearch" value={dataImages.inputSearch}
+                        <input id='input_search' onChange={handleInputChange} name="inputSearch" value={inputSearch}
                             type="search" className="input_search "
                             placeholder="Search images" />
                     </div>
@@ -838,9 +842,9 @@ const PhotoList = () => {
             </div> */}
             <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
                 {
-                    dataImages.initialImages ?
+                    initialImages ?
                         (
-                            dataImages.initialImages.map((img, index) => (
+                            initialImages.map((img, index) => (
                                 <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
                                     <img src={img.urls.regular} className="list_imgs" alt="..."></img>
                                 </div>
@@ -853,9 +857,9 @@ const PhotoList = () => {
             {/* SEARCHED IMAGES  */}
             <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
                 {
-                    dataImages.obtainedImages ?
+                    obtainedImages ?
                         (
-                            dataImages.obtainedImages.map((img, index) => (
+                            obtainedImages.map((img, index) => (
                                 <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
                                     <img src={img.urls.regular} className="list_imgs" alt="..."></img>
                                 </div>
