@@ -4,6 +4,14 @@ import axios from "axios";
 import { axiosFhoto } from '../../../services/axiosFhotoService';
 import { unsflashParams } from '../../../services/unsflashParams';
 import SearchIcon from '@mui/icons-material/Search';
+
+/**
+ * Components
+ */
+
+import ObteinedImages from './ObteinedImages';
+import InitialImages from './InitialImages';
+
 import '../../../css/photos.css'
 import boxed from '../../../imgs/boxed.jpg'
 import chair from '../../../imgs/chair.jpg'
@@ -659,12 +667,7 @@ const imgs = [
 
 const PhotoList = () => {
 
-    const [dataImages, setDataImages] = useState({
-        initialImages: [],
-        obtainedImages: [],
-        // searchedImage: [],
-        inputSearch: '',
-    })
+    
     const [initialImages, setInitialImages] = useState(null)
     const [obtainedImages, setObtainedImages] = useState(null)
     const [clickedImage, setClickedImage] = useState(null)
@@ -682,26 +685,11 @@ const PhotoList = () => {
 
 
     const getIndividualDataImage = (id) => {
-        // const dataImage = imgs.find((img) => (img.id === id))
-        // setDataImages({ searchedImage: dataImage })
-        //https://api.unsplash.com/photos/vgWyuNwjEa4?client_id=mP3dmiXzCDzmwwekbsaz24jyWitaHbj7dFdcNY-vtHk
-
         axiosFhoto.get(`/photos/${id}?${unsflashParams}`)
             .then((response) => {
                 setClickedImage(response.data);
-                // console.log('response 1: ',response)
-                // console.log('response 2: ',response.data)
-                // setDataImages({ searchedImage: response.data })
-
-                // if(response.status === 200){
-                //     if(response.data && response.data.length > 0){
-                //         // set fhoto
-                //         // setDataImages({searchedImage: response.data[0]})
-                //     }
-                // }
             })
-        //console.log('dataImages.obtainedImages: ', dataImages.obtainedImages)
-        //setDataImages({ obtainedImages: dataImages.obtainedImages })
+        
     }
 
 
@@ -739,10 +727,6 @@ const PhotoList = () => {
     const handleInputChange = (e) => {
         // set data for inputSearch
         setInputSearch(e.target.value);
-        // setDataImages({
-        //     ...dataImages,
-        //     [e.target.name]: e.target.value
-        // })
     }
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -751,7 +735,6 @@ const PhotoList = () => {
     }
 
     const searchImages = (prompt) => {
-        // https://api.unsplash.com/search/photos?page=1&query=office&client_id=mP3dmiXzCDzmwwekbsaz24jyWitaHbj7dFdcNY-vtHk
         axiosFhoto.get(`/search/photos?page=1&query=${prompt}&${unsflashParams}`)
             .then((response) => {
                 if (response.status === 200) {
@@ -774,10 +757,6 @@ const PhotoList = () => {
 
     useEffect(() => {
         getInitialImages()
-        // console.log('Component did mount')
-        // console.log('dataImages.initialImage: ', dataImages.initialImages)
-        // console.log('dataImages.obtainedImages: ', dataImages.obtainedImages)
-        
     }, [])
 
 
@@ -785,12 +764,7 @@ const PhotoList = () => {
     return (
         <div className='container'>
             {/* modal open example */}
-
-
             <div className='mt-3'>
-                {/* <button type='button' className='btn btn-success' onClick={getIndividualDataImage1}>
-                prueba de buscar
-            </button> */}
                 <form onSubmit={handleSubmit} className='form_search col-lg-6'>
                     <button type="submit">
                         <SearchIcon />
@@ -840,33 +814,18 @@ const PhotoList = () => {
                 </div>
               
             </div> */}
-            <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
-                {
-                    initialImages ?
-                        (
-                            initialImages.map((img, index) => (
-                                <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
-                                    <img src={img.urls.regular} className="list_imgs" alt="..."></img>
-                                </div>
-                            ))
-                        ) :
-                        ""
-                }
-            </div>
 
-            {/* SEARCHED IMAGES  */}
-            <div style={{ display: 'flex', flexWrap: 'wrap' }} className='div_img_superior'>
-                {
-                    obtainedImages ?
-                        (
-                            obtainedImages.map((img, index) => (
-                                <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
-                                    <img src={img.urls.regular} className="list_imgs" alt="..."></img>
-                                </div>
-                            ))
-                        ) : ""
-                }
-            </div>
+            {
+                obtainedImages ?
+                (
+                   <ObteinedImages obtainedImages={obtainedImages} getIndividualDataImage={getIndividualDataImage} />
+                    
+                ):
+                (
+                   <InitialImages initialImages={initialImages} getIndividualDataImage={getIndividualDataImage} />
+                )
+            }
+           
 
             <div className="modal fade" id="createCarModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl" role="document">
@@ -928,65 +887,6 @@ const PhotoList = () => {
                 </div>
             </div>
 
-            {/* <div className="modal fade" id="createCarModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-xl" role="document">
-                    {
-                        dataImages.searchedImage ?
-                            (
-                                <div className="modal-content">
-                                    {
-                                        dataImages.searchedImage.user ?
-                                            (
-                                                <div className="modal-header">
-                                                    <span className='span_user' style={{}}>
-                                                        <img className='rounded-circle' alt='imagen del usuario' src={dataImages.searchedImage.user.profile_image.small}></img>
-                                                        <div className='div_user_info'>
-                                                            <a href={dataImages.searchedImage.user.links.html} className="A_name">{dataImages.searchedImage.user.name} </a>
-                                                            <div>
-                                                                <a href={dataImages.searchedImage.user.links.html} className='A_username'>{dataImages.searchedImage.user.username}</a>
-                                                            </div>
-
-                                                        </div>
-                                                    </span>
-                                                    <div className='div_dropdown' style={{}}>
-                                                        <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(dataImages.searchedImage.links.download_location)}>
-                                                            Descargar
-                                                        </button>
-                                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="modal-header"> No se hay datos</div>
-                                            )
-                                    }
-                                    <div className="modal-body">
-                                        <div className='row'>
-                                            <div className='col-xl-12'>
-                                                <center>
-                                                    <div className='div_imgs_individual' >
-                                                        {
-                                                            dataImages.searchedImage.urls && dataImages.searchedImage.urls.regular ?
-                                                                (
-                                                                    <img src={dataImages.searchedImage.urls.regular} className="list_imgs" alt="..."></img>
-                                                                ) :
-                                                                (
-                                                                    <p>No image data available.</p>
-                                                                )
-                                                        }
-
-                                                    </div>
-                                                </center>
-
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ) :
-                            (<p>No se encontrarons datos</p>)
-                    }
-                </div>
-            </div> */}
         </div>
     );
 }
