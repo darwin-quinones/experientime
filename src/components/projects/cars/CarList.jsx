@@ -8,68 +8,14 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/js/dist/dropdown.js'
 import validator from 'validator';
 
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup'
+
+
 const CarList = () => {
 
     const [cars, setCars] = useState([])
     const [cauntries, setCauntries] = useState([])
-    const [formData, setFormData] = useState({
-        nombre: '',
-        modelo: '',
-        marca: '',
-        pais: ''
-    });
-
-    const [errors, setErrors] = useState({
-        nombre: '',
-        modelo: '',
-        marca: '',
-        pais: ''
-    });
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Perform validation before sending data
-        if (validateForm()) {
-            // Send data to the server or perform other actions
-            sendData(formData);
-        }
-    };
-    const validateForm = () => {
-        // Perform validation on the form data
-        const { nombre, modelo, marca, pais } = formData;
-        const newErrors = {};
-        if (validator.isEmpty(nombre)) {newErrors.nombre = 'Este campo es requerido'}
-        if (validator.isEmpty(modelo)) {newErrors.modelo = 'Este campo es requerido'}
-        if (validator.isEmpty(marca)) {newErrors.marca = 'Este campo es requerido'}
-        if (validator.isEmpty(pais)) { newErrors.pais = 'Este campo es requerido'}
-
-        // if (validator.isLength(nombre, { max: 30 })) {newErrors.nombre = 'No debe tener más de 30 caracteres';}
-        // if (validator.isLength(modelo, { max: 30 })) {newErrors.modelo = 'No debe tener más de 30 caracteres';}
-        // if (validator.isLength(marca, { max: 30 })) {newErrors.modelo = 'No debe tener más de 30 caracteres';}
-        // Update the state with the errors
-        setErrors(newErrors);
-
-        // Return true if there are no errors, otherwise return false
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const sendData = (data) => {
-        axiosCar.post('/cars', data)
-        .then((response) => {
-            console.log(response)
-        })
-        .catch((error) => console.log(error))
-        
-        // Send the form data to the server or perform other actions
-        // You can use fetch, Axios, or any other library to make API calls to the server.
-    };
 
     // execute at the bigging when page load
     useEffect(() => {
@@ -100,10 +46,54 @@ const CarList = () => {
             }).catch((error) => {
                 console.log(`Something went wrong: ${error}`)
             })
-            // .finally(() => {
-            //     console.log('ended obtaining cars')
-            // })
+        // .finally(() => {
+        //     console.log('ended obtaining cars')
+        // })
     }
+
+    const initialValues = {
+        nombre: '',
+        modelo: '',
+        marca: '',
+        pais: ''
+    }
+
+    const createCarSchema = Yup.object().shape(
+        {
+            nombre: Yup.string()
+                .required('El nombre es requerido')
+                .min(4, 'El nombre es muy corto')
+                .max(50, 'El nombre es muy largo'),
+            modelo: Yup.string()
+                .required('El modelo es requerido')
+                .min(4, 'El modelo es muy corto')
+                .max(50, 'El modelo es muy largo'),
+            marca: Yup.string()
+                .required('El marca es requerida')
+                .min(4, 'El marca es muy corta')
+                .max(50, 'El marca es muy larga'),
+            pais: Yup.string()
+                .required('El pais es requerido')
+        }
+    )
+    const onHandleSubmit = async (values, { resetForm }) => {
+        await new Promise((r) => setTimeout(r, 1000));
+        createCar(values)
+        resetForm({ values: '' })
+
+    }
+
+    const createCar = (data) => {
+        axiosCar.post('/cars', data)
+            .then((response) => {
+                if (response.status === 201 && Object.keys(response.data).length > 0) {
+                    // if the car is created succesfully the we list again cars
+                    listCars()
+                }
+            })
+            .catch((error) => console.log(error))
+    };
+
 
     const API_CARS = [
         {
@@ -136,7 +126,6 @@ const CarList = () => {
     ]
 
     var c = 1
-    const minLength = 3; const maxLength = 30
     return (
         <div>
             <div className="card table table-response">
@@ -203,69 +192,117 @@ const CarList = () => {
                             <h1 className="modal-title fs-5" id="createCarModalLabel">Crear un nuevo Carro</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form onSubmit={handleSubmit}>
-                            <div className="modal-body">
-                                <div className="mb-3">
-                                    <label htmlFor="nombre" className="form-label">Nombre</label>
-                                    <input type="text"
-                                        name="nombre"
-                                        minLength={minLength}
-                                        maxLength={maxLength}
-                                        value={formData.nombre}
-                                        onChange={handleChange}
-                                        className="form-control"
-                                        placeholder="Nombre" id="nombre"
-                                        aria-describedby="emailHelp" />
-                                    {errors.nombre && <span style={{ color: 'red' }}>{errors.nombre}</span>}
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="modelo" className="form-label">Modelo</label>
-                                    <input type="Modelo"
-                                        name="modelo"
-                                        minLength={minLength}
-                                        maxLength={maxLength}
-                                        value={formData.modelo}
-                                        onChange={handleChange}
-                                        placeholder="Modelo"
-                                        id="modelo"
-                                        className="form-control" />
-                                   {errors.modelo && <span style={{ color: 'red' }}>{errors.modelo}</span>}
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="" className="form-label">Marca</label>
-                                    <input type="text"
-                                        name="marca"
-                                        id="marca"
-                                        minLength={minLength}
-                                        maxLength={maxLength}
-                                        value={formData.marca}
-                                        onChange={handleChange}
-                                        className="form-control"
-                                        aria-describedby="emailHelp" />
-                                    {errors.marca && <span style={{ color: 'red' }}>{errors.marca}</span>}
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="pais" className="form-label">País</label>
-                                    <select className="form-select"
-                                        value={formData.pais}
-                                        onChange={handleChange}
-                                        name="pais" id="pais"
-                                        aria-label="Default select example">
-                                        <option value=''>Selecciona un país</option>
-                                        {
-                                            cauntries.map((country, index) => (
-                                                <option key={index} value={country.common}>{country.common}</option>
-                                            ))
-                                        }
-                                    </select>
-                                    {errors.pais && <span style={{ color: 'red' }}>{errors.pais}</span>}
-                                </div>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="submit" className="btn btn-success">Enviar</button>
-                            </div>
-                        </form>
+                        <Formik
+                            // initial values  that the form will take
+                            initialValues={initialValues}
+                            validationSchema={createCarSchema}
+                            onSubmit={onHandleSubmit}
+
+                        >
+                            {
+                                ({
+                                    values,
+                                    touched,
+                                    errors,
+                                    isSubmitting,
+                                    handleChange,
+                                    handleBlur
+                                }) => (
+                                    <Form>
+                                        <div className="modal-body">
+                                            <div className="mb-3">
+                                                <label htmlFor="nombre" className="form-label">Nombre</label>
+                                                <Field type="text"
+                                                    name="nombre"
+                                                    id="nombre"
+                                                    className="form-control"
+                                                    placeholder="Nombre" />
+                                                {/* errors  */}
+                                                {
+                                                    /* If exists any error and also input is touched it return a message */
+                                                    errors.nombre && touched.nombre &&
+                                                    (
+                                                        <ErrorMessage name="nombre" className='col-sm-12 text-danger' role="alert" component='div' />
+                                                    )
+                                                }
+                                            </div>
+
+                                            <div className="mb-3">
+                                                <label htmlFor="modelo" className="form-label">Modelo</label>
+                                                <Field type="text"
+                                                    name="modelo"
+                                                    id="modelo"
+                                                    placeholder="Modelo"
+                                                    className="form-control" />
+                                                {/* errors  */}
+                                                {
+                                                    /* If exists any error and also input is touched it return a message */
+                                                    errors.modelo && touched.modelo &&
+                                                    (
+                                                        <ErrorMessage name="modelo" className='col-sm-12 text-danger' role="alert" component='div' />
+                                                    )
+                                                }
+
+                                            </div>
+
+                                            <div className="mb-3">
+                                                <label htmlFor="" className="form-label">Marca</label>
+                                                <Field type="text"
+                                                    name="marca"
+                                                    placeholder="Marca"
+                                                    id="marca"
+                                                    className="form-control"
+                                                />
+                                                {/* errors  */}
+                                                {
+                                                    /* If exists any error and also input is touched it return a message */
+                                                    errors.marca && touched.marca &&
+                                                    (
+                                                        <ErrorMessage name="marca" className='col-sm-12 text-danger' role="alert" component='div' />
+                                                    )
+                                                }
+
+                                            </div>
+
+                                            <div className="mb-3">
+                                                <label htmlFor="pais" className="form-label">País</label>
+                                                <Field as="select" className="form-select"
+                                                    name="pais" id="pais"
+                                                    aria-label="Default select example">
+                                                    <option value=''>Selecciona un país</option>
+                                                    {
+                                                        cauntries.map((country, index) => (
+                                                            <option key={index} value={country.common}>{country.common}</option>
+                                                        ))
+                                                    }
+                                                </Field>
+                                                {/* errors  */}
+                                                {
+                                                    /* If exists any error and also input is touched it return a message */
+                                                    errors.pais && touched.pais &&
+                                                    (
+                                                        <ErrorMessage name="pais" className='col-sm-12 text-danger' role="alert" component='div' />
+                                                    )
+                                                }
+
+                                            </div>
+                                            <div className="mb-3">
+                                                {isSubmitting ? (<p>Creando nuevo carro...</p>) : null}
+                                            </div>
+
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            <button type="submit" className="btn btn-success">Enviar</button>
+                                        </div>
+
+                                    </Form>
+
+                                )
+                            }
+
+
+                        </Formik>
                     </div>
                 </div>
             </div>
