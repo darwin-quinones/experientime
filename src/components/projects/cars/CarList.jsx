@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAllCars, axiosCar } from '../../../services/fetchCRUDCarService';
 import { axiosCountry } from '../../../services/axiosCountryService';
+import { confirmDeletionAlert } from '../alerts/Alerts';
 import * as Alerts from '../alerts/Alerts'
 import CarCreate from './CarCreate.jsx';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -8,8 +9,9 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/js/dist/dropdown.js'
 import validator from 'validator';
 
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, Form, ErrorMessage, useFormik, } from 'formik';
 import * as Yup from 'yup'
+import axios from 'axios';
 
 
 const CarList = () => {
@@ -17,12 +19,40 @@ const CarList = () => {
     const [cars, setCars] = useState([])
     const [cauntries, setCauntries] = useState([])
 
+    const [clickedCar, setClickedCar] = useState({
+        id: '',
+        name: '',
+        model: '',
+        brand: '',
+        country: ''
+    });
+
+    const [showModal, setShowModal] = useState(false); // State to manage modal visibility
+
+    // Function to open the modal
+    const openModal = () => {
+        setShowModal(true);
+    };
+
+    // Function to close the modal
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
     // execute at the bigging when page load
     useEffect(() => {
         listCars()
-        getCarsTest()
+        getCountries()
     }, [])
-    const getCarsTest = () => {
+
+    useEffect(() => {
+        if (showModal) {
+            // Update Formik initial values when clickedCar changes
+            formik.setValues(clickedCar);
+        }
+    }, [clickedCar, showModal]);
+
+    const getCountries = () => {
         axiosCountry.get('/all')
             .then((response) => {
                 if (response.data) {
@@ -52,36 +82,64 @@ const CarList = () => {
     }
 
     const initialValues = {
-        nombre: '',
-        modelo: '',
-        marca: '',
-        pais: ''
+        name: '',
+        model: '',
+        brand: '',
+        country: ''
     }
+
 
     const createCarSchema = Yup.object().shape(
         {
-            nombre: Yup.string()
-                .required('El nombre es requerido')
-                .min(4, 'El nombre es muy corto')
-                .max(50, 'El nombre es muy largo'),
-            modelo: Yup.string()
-                .required('El modelo es requerido')
-                .min(4, 'El modelo es muy corto')
-                .max(50, 'El modelo es muy largo'),
-            marca: Yup.string()
-                .required('El marca es requerida')
-                .min(4, 'El marca es muy corta')
-                .max(50, 'El marca es muy larga'),
-            pais: Yup.string()
-                .required('El pais es requerido')
+            name: Yup.string()
+                .required('Name is required')
+                .min(4, 'Name is too short')
+                .max(50, 'Name is too large'),
+            model: Yup.string()
+                .required('Model is required')
+                .min(4, 'Model is too short')
+                .max(50, 'Model is too large'),
+            brand: Yup.string()
+                .required('Brand is required')
+                .min(4, 'Brand is too short')
+                .max(50, 'Brand is too large'),
+            country: Yup.string()
+                .required('Country is required')
         }
     )
-    const onHandleSubmit = async (values, { resetForm }) => {
+
+
+    const onHandleSubmitCarCreate = async (values, { resetForm }) => {
         await new Promise((r) => setTimeout(r, 1000));
         createCar(values)
         resetForm({ values: '' })
 
     }
+    const onHandleSubmitCarEdit = async (car, { resetForm }) => {
+        await new Promise((r) => setTimeout(r, 1000));
+        // resetForm({ values: '' })
+        axiosCar.put(`/cars/${car.id}`, car)
+            .then((response) => {
+                console.log('card edited: ', response.data);
+                listCars()
+            })
+            .catch((error) => console.log(error))
+        // console.log('edit car values: ', values)
+
+    }
+    const formik = useFormik({
+
+        initialValues: {
+            // We use || '' to provide a default value of an empty string if clickedCar.name is undefined
+            id: clickedCar.id || '',
+            name: clickedCar.name || '',
+            model: clickedCar.model || '',
+            brand: clickedCar.brand || '',
+            country: clickedCar.country || ''
+        },
+        validationSchema: createCarSchema,
+        onSubmit: onHandleSubmitCarEdit
+    });
 
     const createCar = (data) => {
         axiosCar.post('/cars', data)
@@ -94,32 +152,57 @@ const CarList = () => {
             .catch((error) => console.log(error))
     };
 
+    const getCarById = (id) => {
+        axiosCar.get(`/cars/${id}`)
+            .then((response) => {
+                setClickedCar({
+                    id: response.data.id,
+                    name: response.data.name,
+                    model: response.data.model,
+                    brand: response.data.brand,
+                    country: response.data.country
+                })
+                openModal()
+            })
+            .catch((error) => console.log(error))
+    }
 
+    const deleteCarById = (id) => {
+        //confirmDeletionAlert()
+        axiosCar.delete(`/cars/${id}`)
+        .then((response) => {
+            console.log('response of deliting: ', response)
+            if(response.status === 200 && response.data.message){
+                listCars()
+            }
+        })
+        .catch((error) => console.log(error))
+    }
     const API_CARS = [
         {
             "id": 21,
-            "nombre": "Spark GT",
-            "modelo": "Modelo LT",
-            "marca": "Chevrolet",
-            "pais": "Colombia",
+            "name": "Spark GT",
+            "model": "model LT",
+            "brand": "Chevrolet",
+            "country": "Colombia",
             "fechaCreate": "2022-10-26",
             "fechaUpdate": "2022-10-27"
         },
         {
             "id": 22,
-            "nombre": "Toyota TXL",
-            "modelo": "Modelo Diesel",
-            "marca": "Toyota",
-            "pais": "Japan",
+            "name": "Toyota TXL",
+            "model": "model Diesel",
+            "brand": "Toyota",
+            "country": "Japan",
             "fechaCreate": "2022-10-26",
             "fechaUpdate": null
         },
         {
             "id": 23,
-            "nombre": "Mercedes Benz AGM",
-            "modelo": "Modelo Turbo",
-            "marca": "Mercedes Benz",
-            "pais": "Germany",
+            "name": "Mercedes Benz AGM",
+            "model": "model Turbo",
+            "brand": "Mercedes Benz",
+            "country": "Germany",
             "fechaCreate": "2022-10-26",
             "fechaUpdate": null
         }
@@ -131,52 +214,53 @@ const CarList = () => {
             <div className="card table table-response">
                 <div className="card-header table table-responsive" style={{ backgroundColor: "#33527F", float: 'right' }}>
                     <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#createCarModal">
-                        Crear Carro
+                        Create Car
                     </button>
                 </div>
                 <div className="card-body table table-responsive">
-                    <h4>Lista de carros</h4>
+                    <h4>Car List</h4>
                     <table className="table table-responsive table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nombre</th>
-                                <th>Modelo</th>
-                                <th>Marca</th>
-                                <th>Pais</th>
-                                <th>Fecha Creación</th>
-                                <th>Fecha Edición</th>
-                                <th>Acciones</th>
+                                <th>Name</th>
+                                <th>Model</th>
+                                <th>Brand</th>
+                                <th>Country</th>
+                                <th>Creation date</th>
+                                <th>Update date</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {(cars ? cars.map((car) => (
                                 <tr key={car.id}>
                                     <td>{c++}</td>
-                                    <td>{car.nombre}</td>
-                                    <td>{car.modelo}</td>
-                                    <td>{car.marca}</td>
-                                    <td>{car.pais}</td>
-                                    <td>{car.fechaCreate}</td>
-                                    {car.fechaUpdated ? (
-                                        <td>{car.fechaUpdated}</td>
+                                    <td>{car.name}</td>
+                                    <td>{car.model}</td>
+                                    <td>{car.brand}</td>
+                                    <td>{car.country}</td>
+                                    <td>{car.creation_date}</td>
+                                    {car.update_date ? (
+                                        <td>{car.update_date}</td>
                                     ) :
-                                        (<td>No se ha editado</td>)
+                                        (<td>No edited</td>)
                                     }
                                     <td>
                                         <button type="button" className="btn btn-warning"
                                             style={{ marginRight: "5px" }}
-                                        // onClick={() => createCar(car.id)}
-                                        >Editar</button>
-                                        <button type="button" className="btn btn-danger">
-                                            Borrar</button>
+                                            
+                                            onClick={() => getCarById(car.id)}
+                                        >Edit</button>
+                                        <button type="button" className="btn btn-danger" 
+                                        onClick={ () => deleteCarById(car.id)}>Delete</button>
                                     </td>
                                 </tr>
                             ))
                                 :
                                 (
                                     <tr key={cars}>
-                                        <td colSpan={10}>No hay datos</td>
+                                        <td colSpan={10}>No data</td>
                                     </tr>
                                 )
                             )}
@@ -185,19 +269,19 @@ const CarList = () => {
                 </div>
             </div>
             {/* Modals */}
+            {/* create car modal */}
             <div className="modal fade" id="createCarModal" tabIndex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="createCarModalLabel">Crear un nuevo Carro</h1>
+                            <h1 className="modal-title fs-5" id="createCarModalLabel">Create new Car</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <Formik
                             // initial values  that the form will take
                             initialValues={initialValues}
                             validationSchema={createCarSchema}
-                            onSubmit={onHandleSubmit}
-
+                            onSubmit={onHandleSubmitCarCreate}
                         >
                             {
                                 ({
@@ -211,65 +295,65 @@ const CarList = () => {
                                     <Form>
                                         <div className="modal-body">
                                             <div className="mb-3">
-                                                <label htmlFor="nombre" className="form-label">Nombre</label>
+                                                <label htmlFor="name" className="form-label">Name</label>
                                                 <Field type="text"
-                                                    name="nombre"
-                                                    id="nombre"
+                                                    name="name"
+                                                    id="name"
                                                     className="form-control"
-                                                    placeholder="Nombre" />
+                                                    placeholder="Name" />
                                                 {/* errors  */}
                                                 {
                                                     /* If exists any error and also input is touched it return a message */
-                                                    errors.nombre && touched.nombre &&
+                                                    errors.name && touched.name &&
                                                     (
-                                                        <ErrorMessage name="nombre" className='col-sm-12 text-danger' role="alert" component='div' />
+                                                        <ErrorMessage name="name" className='col-sm-12 text-danger' role="alert" component='div' />
                                                     )
                                                 }
                                             </div>
 
                                             <div className="mb-3">
-                                                <label htmlFor="modelo" className="form-label">Modelo</label>
+                                                <label htmlFor="model" className="form-label">Model</label>
                                                 <Field type="text"
-                                                    name="modelo"
-                                                    id="modelo"
-                                                    placeholder="Modelo"
+                                                    name="model"
+                                                    id="model"
+                                                    placeholder="Model"
                                                     className="form-control" />
                                                 {/* errors  */}
                                                 {
                                                     /* If exists any error and also input is touched it return a message */
-                                                    errors.modelo && touched.modelo &&
+                                                    errors.model && touched.model &&
                                                     (
-                                                        <ErrorMessage name="modelo" className='col-sm-12 text-danger' role="alert" component='div' />
+                                                        <ErrorMessage name="model" className='col-sm-12 text-danger' role="alert" component='div' />
                                                     )
                                                 }
 
                                             </div>
 
                                             <div className="mb-3">
-                                                <label htmlFor="" className="form-label">Marca</label>
+                                                <label htmlFor="" className="form-label">Brand</label>
                                                 <Field type="text"
-                                                    name="marca"
-                                                    placeholder="Marca"
-                                                    id="marca"
+                                                    name="brand"
+                                                    placeholder="Brand"
+                                                    id="brand"
                                                     className="form-control"
                                                 />
                                                 {/* errors  */}
                                                 {
                                                     /* If exists any error and also input is touched it return a message */
-                                                    errors.marca && touched.marca &&
+                                                    errors.brand && touched.brand &&
                                                     (
-                                                        <ErrorMessage name="marca" className='col-sm-12 text-danger' role="alert" component='div' />
+                                                        <ErrorMessage name="brand" className='col-sm-12 text-danger' role="alert" component='div' />
                                                     )
                                                 }
 
                                             </div>
 
                                             <div className="mb-3">
-                                                <label htmlFor="pais" className="form-label">País</label>
+                                                <label htmlFor="country" className="form-label">Country</label>
                                                 <Field as="select" className="form-select"
-                                                    name="pais" id="pais"
+                                                    name="country" id="country"
                                                     aria-label="Default select example">
-                                                    <option value=''>Selecciona un país</option>
+                                                    <option value=''>Select a country</option>
                                                     {
                                                         cauntries.map((country, index) => (
                                                             <option key={index} value={country.common}>{country.common}</option>
@@ -279,33 +363,146 @@ const CarList = () => {
                                                 {/* errors  */}
                                                 {
                                                     /* If exists any error and also input is touched it return a message */
-                                                    errors.pais && touched.pais &&
+                                                    errors.country && touched.country &&
                                                     (
-                                                        <ErrorMessage name="pais" className='col-sm-12 text-danger' role="alert" component='div' />
+                                                        <ErrorMessage name="country" className='col-sm-12 text-danger' role="alert" component='div' />
                                                     )
                                                 }
 
                                             </div>
                                             <div className="mb-3">
-                                                {isSubmitting ? (<p>Creando nuevo carro...</p>) : null}
+                                                {isSubmitting ? (<p>Creating new car...</p>) : null}
                                             </div>
 
                                         </div>
                                         <div className="modal-footer">
-                                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                            <button type="submit" className="btn btn-success">Enviar</button>
+                                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" className="btn btn-success">Send</button>
                                         </div>
 
                                     </Form>
 
                                 )
                             }
-
-
                         </Formik>
                     </div>
                 </div>
             </div>
+            {/* edit car modal */}
+            <div className={`modal fade ${showModal ? 'show' : ''}`} style={{ display: showModal ? 'block' : 'none' }} id="editCarModal" tabIndex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="editCarModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="createCarModalLabel">Edit Car</h1>
+                            <button type="button" className="btn-close" aria-label="Close" onClick={closeModal}></button>
+                        </div>
+                        <form onSubmit={formik.handleSubmit}>
+                            <div className="modal-body">
+                                <div className="mb-3">
+                                    <label htmlFor="name" className="form-label">Name</label>
+                                    <input type="text"
+                                        name="name"
+                                        id="name"
+                                        value={formik.values.name}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        className="form-control"
+                                        placeholder="Name"
+
+                                    />
+                                    {/* errors  */}
+                                    {
+                                        /* If exists any error and also input is touched it return a message */
+                                        formik.errors.name && formik.touched.name &&
+                                        (
+                                            <div className='col-sm-12 text-danger' role="alert" >{formik.errors.name}</div>
+                                        )
+                                    }
+                                </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="model" className="form-label">Model</label>
+                                    <input type="text"
+                                        name="model"
+                                        id="model"
+                                        value={formik.values.model}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        placeholder="Model"
+                                        className="form-control" />
+                                    {/* errors  */}
+                                    {
+                                        /* If exists any error and also input is touched it return a message */
+                                        formik.errors.model && formik.touched.model &&
+                                        (
+                                            <div className='col-sm-12 text-danger' role="alert" >{formik.errors.model}</div>
+                                        )
+                                    }
+
+                                </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="" className="form-label">Brand</label>
+                                    <input type="text"
+                                        name="brand"
+                                        placeholder="Brand"
+                                        id="brand"
+                                        value={formik.values.brand}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        className="form-control"
+                                    />
+                                    {/* errors  */}
+                                    {
+                                        /* If exists any error and also input is touched it return a message */
+                                        formik.errors.brand && formik.touched.brand &&
+                                        (
+                                            <div className='col-sm-12 text-danger' role="alert" >{formik.errors.brand}</div>
+                                        )
+                                    }
+
+                                </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="country" className="form-label">Country</label>
+                                    <select className="form-select"
+                                        name="country" id="country"
+                                        aria-label="Default select example"
+                                        value={formik.values.country}  // Bind the selected value to formik.values.country
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}>
+
+                                        <option value=''>Select a country</option>
+                                        {
+                                            cauntries.map((country, index) => (
+                                                <option key={index} value={country.common}>{country.common}</option>
+                                            ))
+                                        }
+                                    </select>
+                                    {/* errors  */}
+                                    {
+                                        /* If exists any error and also input is touched it return a message */
+                                        formik.errors.country && formik.touched.country &&
+                                        (
+                                            <div className='col-sm-12 text-danger' role="alert" >{formik.errors.country}</div>
+                                        )
+                                    }
+
+                                </div>
+                                <div className="mb-3">
+                                    {formik.isSubmitting ? (<p>Editing car...</p>) : null}
+                                </div>
+
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={closeModal}>Close</button>
+                                <button type="submit" className="btn btn-success">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
     );
 }

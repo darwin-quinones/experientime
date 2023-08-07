@@ -9,8 +9,8 @@ const InitialImages = (props) => {
                     initialImages ?
                         (
                             initialImages.map((img, index) => (
-                                <div key={index} className='div_imgs m-2' onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal">
-                                    <img src={img.urls.regular} className="list_imgs" alt="..."></img>
+                                <div key={index} className='div_imgs m-2' >
+                                    <img src={img.urls.regular} className="list_imgs" alt={img.alt_description} onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#createCarModal"></img>
                                 </div>
                             ))
                         ) :
