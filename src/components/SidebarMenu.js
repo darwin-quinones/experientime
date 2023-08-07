@@ -18,8 +18,8 @@ const SitebarMenu = ({ children }) => {
     }
 
     return (
-        <div className={` d-flex main-b-${darkMode ? 'dark' : 'light'}`} >
-            <div className={`b-dark col-2 col-sm-2 col-md-2 min-vh-100 d-flex  justify-content-between flex-column`}  >
+        <div className={` d-flex main-b-${darkMode ? 'dark' : 'light'} `} >
+            <div className={`sidebar b-dark col-2 col-sm-2 col-md-2 min-vh-100 d-flex  justify-content-between flex-column`}  >
                 <div>
                     <Link to='/' className={`text-decoration-none text-white d-none d-sm-inline d-flex align-itemcenter ms-3 mt-3`}>
                         <i className="fs-4 bi bi-speedmeter"></i>
@@ -107,7 +107,7 @@ const SitebarMenu = ({ children }) => {
                 </div>
             </div>
 
-            <div className={`col-10 col-sm-10 col-md-10  main-b-${darkMode ? 'dark' : 'light'}`} >{children}</div>
+            <div className={`main col-10 col-sm-10 col-md-10  main-b-${darkMode ? 'dark' : 'light'}`} >{children}</div>
         </div>
     );
 }

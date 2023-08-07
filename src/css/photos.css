@@ -1,3 +1,26 @@
+/* test */
+
+.gallery {
+  width: 100%;
+  padding: 2rem
+}
+.img-card {
+  columns: 3 12rem;
+  gap: 2rem;
+}
+
+.img-card img {
+  width: 100%;
+  border-radius: 1rem;
+  margin: 1rem 0 ;
+  transition: .2s ease-in-out;
+}
+
+.img-card img:hover {
+  transform: scale(1.025);
+  cursor: pointer;
+}
+
 .form_search {
     position: relative;
     display: flex;
@@ -59,6 +82,8 @@
     width: 100%;
     height: auto;
     cursor: pointer;
+    object-fit: cover;
+    object-position: 50% 50%;
   }
 
   a { 

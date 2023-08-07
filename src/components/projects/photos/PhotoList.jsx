@@ -776,45 +776,6 @@ const PhotoList = () => {
                     </div>
                 </form>
             </div>
-
-            {/* <div className="container" >
-                <div className="row  mt-3">
-                    <div className="col">
-                        <div className='card'>
-                            <img src={chair} class="card-img-top" alt="..."></img>
-                        </div>
-                    </div>
-                    <div className="col">
-                        <div className='card'>
-                            <img src={landscapes} class="card-img-top" alt="..."></img>
-                        </div>
-                    </div>
-                    <div className="col">
-                        <div className='card'>
-                            <img src={forest} class="card-img-top" alt="..."></img>
-                        </div>
-                    </div>
-                </div>
-                <div className="row  mt-3">
-                    <div className="col">
-                        <div className='card'>
-                            <img src={chair} class="card-img-top" alt="..."></img>
-                        </div>
-                    </div>
-                    <div className="col">
-                        <div className='card'>
-                            <img src={landscapes} class="card-img-top" alt="..."></img>
-                        </div>
-                    </div>
-                    <div className="col">
-                        <div className='card'>
-                            <img src={forest} class="card-img-top" alt="..."></img>
-                        </div>
-                    </div>
-                </div>
-              
-            </div> */}
-
             {
                 obtainedImages ?
                 (

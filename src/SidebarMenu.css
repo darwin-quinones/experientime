@@ -37,3 +37,12 @@
     /* otros estilos específicos del modo claro */
   }
   
+.sidebar {
+    height: 100vh
+}
+
+.main {
+    /* make menu adjust the window and allow scroll  */
+    height: 100vh;
+    overflow-y: scroll;
+}
