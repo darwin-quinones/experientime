@@ -788,7 +788,7 @@ const PhotoList = () => {
             }
            
 
-            <div className="modal fade" id="createCarModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
+            <div className="modal fade" id="downloadPhotoModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="downloadPhotoModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl" role="document">
                     {
                         clickedImage ?
@@ -833,11 +833,8 @@ const PhotoList = () => {
                                                                     <p>No image data available.</p>
                                                                 )
                                                         }
-
                                                     </div>
                                                 </center>
-
-
                                             </div>
                                         </div>
                                     </div>

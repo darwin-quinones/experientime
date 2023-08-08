@@ -23,68 +23,49 @@ const SitebarMenu = ({ children }) => {
                 <div>
                     <Link to='/' className={`text-decoration-none text-white d-none d-sm-inline d-flex align-itemcenter ms-3 mt-3`}>
                         <i className="fs-4 bi bi-speedmeter"></i>
-                        <span className={`ms-1 fs-4 d-none d-lg-inline`}>Experientime</span>
+                        <span className={`ms-1 fs-4 d-none d-sm-inline`}>Experientime</span>
                     </Link>
                     <hr className="text-secondary d-none d-sm-block" />
                     <ul className="nav nav-pills flex-column mt-3 mt-sm-0">
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
                             <Link to='/' className="nav-link text-white fs-5" aria-current="page">
                                 <i className="bi bi-bi bi-house"></i>
-                                <span className="ms-3 d-none d-lg-inline">Home</span>
+                                <span className="ms-3 d-none d-sm-inline">Home</span>
                             </Link>
                         </li>
 
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
                             <Link to='/cars' className="nav-link text-white fs-5" aria-current="page">
                                 <i className="bi bi-car-front-fill"></i>
-                                <span className="ms-3 d-none d-lg-inline">Cars</span>
+                                <span className="ms-3 d-none d-sm-inline">Cars</span>
                             </Link>
                         </li>
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
                             <Link to='/photos' className="nav-link text-white fs-5" aria-current="page">
                                 <i className="bi bi-images"></i>
-                                <span className="ms-3 d-none d-lg-inline">Photos</span>
+                                <span className="ms-3 d-none d-sm-inline">Photos</span>
                             </Link>
                         </li>
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
                             <Link to='/' className="nav-link text-white fs-5" aria-current="page">
                                 <i className="bi bi-grid"></i>
-                                <span className="ms-3 d-none d-lg-inline">Products</span>
+                                <span className="ms-3 d-none d-sm-inline">Products</span>
                             </Link>
                         </li>
                         <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
                             <Link to='/' className="nav-link text-white fs-5" aria-current="page">
                                 <i className="bi bi-people"></i>
-                                <span className="ms-3 d-none d-lg-inline">Costumers</span>
+                                <span className="ms-3 d-none d-sm-inline">Costumers</span>
                             </Link>
                         </li>
                         {
-                            darkMode ?
-                                (
-                                    <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                                        <Link onClick={toggleDarkMode} className="nav-link text-white fs-5" aria-current="page">
-                                            <LightModeIcon style={{ color: 'white' }} />
-                                            <span className="ms-3 d-none d-lg-inline">Light mode</span>
-                                        </Link>
-                                    </li>
-                                ) :
-                                (
-                                    <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                                        <Link onClick={toggleDarkMode} className="nav-link text-white fs-5" aria-current="page">
-                                            <DarkModeIcon style={{ color: 'white' }} />
-                                            <span className="ms-3 d-none d-lg-inline">Dark mode</span>
-                                        </Link>
-                                    </li>
-                                )
-                        }
-                        {/* {
                             darkMode ?
                             
                                 <div className="nav  flex-column mb-3 mt-sm-0">
                                     <div className="nav item text-white fs-4 my-1 py-2 py-sm-0">
                                         <div onClick={toggleDarkMode} className="nav-link text-white fs-5 btn btn-primary" aria-current="page">
                                             <LightModeIcon style={{ color: 'white' }} />
-                                            <span className="ms-3 d-none d-lg-inline">Light mode</span>
+                                            <span className="ms-3 d-none d-sm-inline">Light mode</span>
                                         </div>
                                     </div>
                                 </div>
@@ -93,12 +74,12 @@ const SitebarMenu = ({ children }) => {
                                     <div className="nav item text-white fs-4 my-1 py-2 py-sm-0">
                                         <div onClick={toggleDarkMode} className="nav-link text-white fs-5 btn btn-primary" aria-current="page">
                                             <DarkModeIcon style={{ color: 'white' }} />
-                                            <span className="ms-3 d-none d-lg-inline">Dark mode</span>
+                                            <span className="ms-3 d-none d-sm-inline">Dark mode</span>
                                         </div>
                                     </div>
                                 </div>
 
-                        } */}
+                        }
                     </ul>
                     {/* this div in the button */}
                     {/* <div className=" " >
