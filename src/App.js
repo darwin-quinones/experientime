@@ -10,14 +10,14 @@ import PhotoList from './components/projects/photos/PhotoList';
 function App() {
   return (
     <Router>
-      <SitebarMenu>
+      {/* <SitebarMenu> */}
         <Routes>
           <Route path='/' element={<Dashboard/>}/>
           {/* <Route path='/cars' element={ <CarFieldExample/> } /> */}
           <Route path='/cars' element={ <CarList/> } />
           <Route path='/photos' element={ <PhotoList/> } />
         </Routes>
-      </SitebarMenu>
+      {/* </SitebarMenu> */}
     </Router>
     
   );

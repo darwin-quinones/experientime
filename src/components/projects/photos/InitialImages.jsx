@@ -3,8 +3,8 @@ const InitialImages = (props) => {
     const { getIndividualDataImage, initialImages } = props;
     return (
         <>
-            <div className="gallery">
-                <div className="img-card">
+            <div id='gallery' className="gallery">
+                <div id='img-card' className="img-card">
                     {
                         initialImages ?
                             (

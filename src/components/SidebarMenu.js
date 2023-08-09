@@ -18,7 +18,7 @@ const SitebarMenu = ({ children }) => {
     }
 
     return (
-        <div className={` d-flex main-b-${darkMode ? 'dark' : 'light'} `} >
+        <div id='all' className={` d-flex main-b-${darkMode ? 'dark' : 'light'} `} >
             <div className={`sidebar b-dark col-2 col-sm-2 col-md-2 min-vh-100 d-flex  justify-content-between flex-column`}  >
                 <div>
                     <Link to='/' className={`text-decoration-none text-white d-none d-sm-inline d-flex align-itemcenter ms-3 mt-3`}>
@@ -58,75 +58,11 @@ const SitebarMenu = ({ children }) => {
                                 <span className="ms-3 d-none d-lg-inline">Costumers</span>
                             </Link>
                         </li>
-                        {
-                            darkMode ?
-                                (
-                                    <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                                        <Link onClick={toggleDarkMode} className="nav-link text-white fs-5" aria-current="page">
-                                            <LightModeIcon style={{ color: 'white' }} />
-                                            <span className="ms-3 d-none d-lg-inline">Light mode</span>
-                                        </Link>
-                                    </li>
-                                ) :
-                                (
-                                    <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                                        <Link onClick={toggleDarkMode} className="nav-link text-white fs-5" aria-current="page">
-                                            <DarkModeIcon style={{ color: 'white' }} />
-                                            <span className="ms-3 d-none d-lg-inline">Dark mode</span>
-                                        </Link>
-                                    </li>
-                                )
-                        }
-                        {/* {
-                            darkMode ?
-                            
-                                <div className="nav  flex-column mb-3 mt-sm-0">
-                                    <div className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                                        <div onClick={toggleDarkMode} className="nav-link text-white fs-5 btn btn-primary" aria-current="page">
-                                            <LightModeIcon style={{ color: 'white' }} />
-                                            <span className="ms-3 d-none d-lg-inline">Light mode</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                :
-                                <div className="nav  flex-column mb-3 mt-sm-0">
-                                    <div className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                                        <div onClick={toggleDarkMode} className="nav-link text-white fs-5 btn btn-primary" aria-current="page">
-                                            <DarkModeIcon style={{ color: 'white' }} />
-                                            <span className="ms-3 d-none d-lg-inline">Dark mode</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                        } */}
                     </ul>
-                    {/* this div in the button */}
-                    {/* <div className=" " >
-                        <hr className="text-secondary d-none d-sm-block" />
-                        {darkMode ?
-                            <div className="nav  flex-column mb-3 mt-sm-0">
-                                <div className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                                    <div onClick={toggleDarkMode} className="nav-link text-white fs-5 btn btn-primary" aria-current="page">
-                                        <LightModeIcon style={{ color: 'white' }} />
-                                        <span className="ms-3 d-none d-sm-inline">Light mode</span>
-                                    </div>
-                                </div>
-                            </div>
-                            :
-                            <div className="nav  flex-column mb-3 mt-sm-0">
-                                <div className="nav item text-white fs-4 my-1 py-2 py-sm-0">
-                                    <div onClick={toggleDarkMode} className="nav-link text-white fs-5 btn btn-primary" aria-current="page">
-                                        <DarkModeIcon style={{ color: 'white' }} />
-                                        <span className="ms-3 d-none d-sm-inline">Dark mode</span>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div> */}
                 </div>
             </div>
 
-            <div className={`main col-10 col-sm-10 col-md-10  main-b-${darkMode ? 'dark' : 'light'}`} >{children}</div>
+            <div id='main' className={`main col-10 col-sm-10 col-md-10  main-b-${darkMode ? 'dark' : 'light'}`} >{children}</div>
         </div>
     );
 }

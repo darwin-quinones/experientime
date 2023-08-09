@@ -13,15 +13,6 @@ import ObteinedImages from './ObteinedImages';
 import InitialImages from './InitialImages';
 
 import '../../../css/photos.css'
-import boxed from '../../../imgs/boxed.jpg'
-import chair from '../../../imgs/chair.jpg'
-import flowers from '../../../imgs/flowers.jpg'
-import forest from '../../../imgs/forest.jpg'
-import lake from '../../../imgs/lake.jpg'
-import landscapes from '../../../imgs/landscapes.jpg'
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Dropdown from 'react-bootstrap/Dropdown';
 
 
 /**
@@ -667,12 +658,16 @@ const imgs = [
 
 const PhotoList = () => {
 
-    
+
     const [initialImages, setInitialImages] = useState(null)
     const [obtainedImages, setObtainedImages] = useState(null)
     const [clickedImage, setClickedImage] = useState(null)
     const [inputSearch, setInputSearch] = useState('')
-    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [loadingMore, setLoadingMore] = useState(false);
+
+
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => {
@@ -689,7 +684,7 @@ const PhotoList = () => {
             .then((response) => {
                 setClickedImage(response.data);
             })
-        
+
     }
 
 
@@ -755,6 +750,56 @@ const PhotoList = () => {
             .catch((error) => console.log(error))
     }
 
+    const getImages = (page) => {
+        axiosFhoto.get(`/photos/?${unsflashParams}&page=${page}`)
+            .then((response) => {
+                console.log(response.data)
+                // Append new images to existing images
+                setInitialImages((prevImages) => [...prevImages, ...response.data]);
+                setCurrentPage(page);
+                setLoadingMore(false);
+            })
+            .catch((error) => {
+                console.log(error)
+                setLoadingMore(false);
+            });
+    };
+
+    // const loadMoreImages = () => {
+    //     const nextPage = currentPage + 1;
+    //     getImages(nextPage);
+    // };
+
+    const loadMoreImages = () => {
+        const nextPage = currentPage + 1;
+        //setLoadingMore(true);
+        getImages(nextPage);
+    };
+    if(loadingMore) {
+        loadMoreImages()
+    }
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = window.scrollY;
+            
+            if (scrollable - scrolled < 200 && !loadingMore) {
+                setLoadingMore(true);
+            }
+        };
+    
+        window.addEventListener('scroll', handleScroll);
+    
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [currentPage, loadingMore]);
+    
+
+
+
+
     useEffect(() => {
         getInitialImages()
     }, [])
@@ -762,31 +807,31 @@ const PhotoList = () => {
 
 
     return (
-        <div className='container'>
+        <div id='container' className='container'>
             {/* modal open example */}
             <div className='mt-3'>
-                <form onSubmit={handleSubmit} className='form_search col-lg-6'>
+                <form onSubmit={handleSubmit} className='form-search'>
                     <button type="submit">
                         <SearchIcon />
                     </button>
-                    <div className="div_input mb-3">
-                        <input id='input_search' onChange={handleInputChange} name="inputSearch" value={inputSearch}
-                            type="search" className="input_search "
+                    <div className="div-input mb-3">
+                        <input id='input-search' onChange={handleInputChange} name="inputSearch" value={inputSearch}
+                            type="search" className="input-search "
                             placeholder="Search images" />
                     </div>
                 </form>
             </div>
             {
                 obtainedImages ?
-                (
-                   <ObteinedImages obtainedImages={obtainedImages} getIndividualDataImage={getIndividualDataImage} />
-                    
-                ):
-                (
-                   <InitialImages initialImages={initialImages} getIndividualDataImage={getIndividualDataImage} />
-                )
+                    (
+                        <ObteinedImages obtainedImages={obtainedImages} getIndividualDataImage={getIndividualDataImage} />
+
+                    ) :
+                    (
+                        <InitialImages initialImages={initialImages} getIndividualDataImage={getIndividualDataImage} />
+                    )
             }
-           
+
 
             <div className="modal fade" id="downloadPhotoModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="downloadPhotoModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl" role="document">
@@ -798,17 +843,17 @@ const PhotoList = () => {
                                         clickedImage.user ?
                                             (
                                                 <div className="modal-header">
-                                                    <span className='span_user' style={{}}>
+                                                    <span className='span-user' style={{}}>
                                                         <img className='rounded-circle' alt='imagen del usuario' src={clickedImage.user.profile_image.small}></img>
-                                                        <div className='div_user_info'>
-                                                            <a href={clickedImage.user.links.html} className="A_name">{clickedImage.user.name} </a>
+                                                        <div className='div-user-info'>
+                                                            <a href={clickedImage.user.links.html} className="link-name">{clickedImage.user.name} </a>
                                                             <div>
-                                                                <a href={clickedImage.user.links.html} className='A_username'>{clickedImage.user.username}</a>
+                                                                <a href={clickedImage.user.links.html} className='link-username'>{clickedImage.user.username}</a>
                                                             </div>
 
                                                         </div>
                                                     </span>
-                                                    <div className='div_dropdown' style={{}}>
+                                                    <div className='div-dropdown' style={{}}>
                                                         <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(clickedImage.links.download_location)}>
                                                             Descargar
                                                         </button>
@@ -823,11 +868,11 @@ const PhotoList = () => {
                                         <div className='row'>
                                             <div className='col-xl-12'>
                                                 <center>
-                                                    <div className='div_imgs_individual' >
+                                                    <div className='div-imgs-individual' >
                                                         {
                                                             clickedImage.urls && clickedImage.urls.regular ?
                                                                 (
-                                                                    <img src={clickedImage.urls.regular} className="list_imgs" alt="..."></img>
+                                                                    <img src={clickedImage.urls.regular} className="list-imgs" alt="..."></img>
                                                                 ) :
                                                                 (
                                                                     <p>No image data available.</p>

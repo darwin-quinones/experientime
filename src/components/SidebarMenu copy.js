@@ -104,6 +104,25 @@ const SitebarMenu = ({ children }) => {
                             </div>
                         }
                     </div> */}
+                    {/* {
+                            darkMode ?
+                                (
+                                    <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
+                                        <Link onClick={toggleDarkMode} className="nav-link text-white fs-5" aria-current="page">
+                                            <LightModeIcon style={{ color: 'white' }} />
+                                            <span className="ms-3 d-none d-lg-inline">Light mode</span>
+                                        </Link>
+                                    </li>
+                                ) :
+                                (
+                                    <li className="nav item text-white fs-4 my-1 py-2 py-sm-0">
+                                        <Link onClick={toggleDarkMode} className="nav-link text-white fs-5" aria-current="page">
+                                            <DarkModeIcon style={{ color: 'white' }} />
+                                            <span className="ms-3 d-none d-lg-inline">Dark mode</span>
+                                        </Link>
+                                    </li>
+                                )
+                        } */}
                 </div>
             </div>
 
