@@ -4,6 +4,7 @@ import axios from "axios";
 import { axiosFhoto } from '../../../services/axiosFhotoService';
 import { unsflashParams } from '../../../services/unsflashParams';
 import SearchIcon from '@mui/icons-material/Search';
+import ImagePreviewModal from './ImagePreviewModal';
 
 /**
  * Components
@@ -11,9 +12,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import ObteinedImages from './ObteinedImages';
 import InitialImages from './InitialImages';
-
 import '../../../css/photos.css'
-
 
 /**
  *  url of unsflash : https://api.unsplash.com/photos/?client_id=
@@ -654,8 +653,6 @@ const imgs = [
 ]
 
 
-
-
 const PhotoList = () => {
 
 
@@ -666,16 +663,14 @@ const PhotoList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [loadingMore, setLoadingMore] = useState(false);
 
-
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const openModal = () => {
-        setIsModalOpen(true);
+        setShowModal(true);
     };
 
     const closeModal = () => {
-        setIsModalOpen(false);
+        setShowModal(false);
     };
 
 
@@ -683,10 +678,10 @@ const PhotoList = () => {
         axiosFhoto.get(`/photos/${id}?${unsflashParams}`)
             .then((response) => {
                 setClickedImage(response.data);
+                openModal();
             })
 
     }
-
 
     const downloadNormalImage = async (imgUrl) => {
 
@@ -716,8 +711,6 @@ const PhotoList = () => {
                 console.error('Error downloading image:', error);
             });
     }
-
-
 
     const handleInputChange = (e) => {
         // set data for inputSearch
@@ -765,14 +758,8 @@ const PhotoList = () => {
             });
     };
 
-    // const loadMoreImages = () => {
-    //     const nextPage = currentPage + 1;
-    //     getImages(nextPage);
-    // };
-
     const loadMoreImages = () => {
         const nextPage = currentPage + 1;
-        //setLoadingMore(true);
         getImages(nextPage);
     };
     if(loadingMore) {
@@ -795,16 +782,10 @@ const PhotoList = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, [currentPage, loadingMore]);
-    
-
-
-
 
     useEffect(() => {
         getInitialImages()
     }, [])
-
-
 
     return (
         <div id='container' className='container'>
@@ -831,65 +812,7 @@ const PhotoList = () => {
                         <InitialImages initialImages={initialImages} getIndividualDataImage={getIndividualDataImage} />
                     )
             }
-
-
-            <div className="modal fade" id="downloadPhotoModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="downloadPhotoModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-xl" role="document">
-                    {
-                        clickedImage ?
-                            (
-                                <div className="modal-content">
-                                    {
-                                        clickedImage.user ?
-                                            (
-                                                <div className="modal-header">
-                                                    <span className='span-user' style={{}}>
-                                                        <img className='rounded-circle' alt='imagen del usuario' src={clickedImage.user.profile_image.small}></img>
-                                                        <div className='div-user-info'>
-                                                            <a href={clickedImage.user.links.html} className="link-name">{clickedImage.user.name} </a>
-                                                            <div>
-                                                                <a href={clickedImage.user.links.html} className='link-username'>{clickedImage.user.username}</a>
-                                                            </div>
-
-                                                        </div>
-                                                    </span>
-                                                    <div className='div-dropdown' style={{}}>
-                                                        <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(clickedImage.links.download_location)}>
-                                                            Descargar
-                                                        </button>
-                                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="modal-header"> No se hay datos</div>
-                                            )
-                                    }
-                                    <div className="modal-body">
-                                        <div className='row'>
-                                            <div className='col-xl-12'>
-                                                <center>
-                                                    <div className='div-imgs-individual' >
-                                                        {
-                                                            clickedImage.urls && clickedImage.urls.regular ?
-                                                                (
-                                                                    <img src={clickedImage.urls.regular} className="list-imgs" alt="..."></img>
-                                                                ) :
-                                                                (
-                                                                    <p>No image data available.</p>
-                                                                )
-                                                        }
-                                                    </div>
-                                                </center>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ) :
-                            (<p>No se encontrarons datos</p>)
-                    }
-                </div>
-            </div>
-
+            <ImagePreviewModal clickedImage={clickedImage} showModal={showModal} closeModal={closeModal} downloadNormalImage={downloadNormalImage} />
         </div>
     );
 }

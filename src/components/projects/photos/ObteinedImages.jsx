@@ -10,7 +10,7 @@ const ObteinedImages = (props) => {
                         obtainedImages ?
                             (
                                 obtainedImages.map((img, index) => (
-                                    <img key={index} src={img.urls.regular} className="" alt={img.alt_description} onClick={() => getIndividualDataImage(img.id)} data-bs-toggle="modal" data-bs-target="#downloadPhotoModal"></img>
+                                    <img key={index} src={img.urls.regular} className="" alt={img.alt_description} onClick={() => getIndividualDataImage(img.id)}></img>
                                 ))
                             ) :
                             ""

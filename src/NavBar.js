@@ -9,16 +9,16 @@ const NavBar = () => {
     return (
         <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
         <Container>
-          <Navbar.Brand href="#home">Experientime</Navbar.Brand>
+          <Navbar.Brand href="/">Experientime</Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="#features">Home</Nav.Link>
-              <Nav.Link href="#pricing">Cars</Nav.Link>
-              <Nav.Link href="#pricing">Photos</Nav.Link>
+              <Nav.Link href="/">Home</Nav.Link>
+              <Nav.Link href="/cars">Cars</Nav.Link>
+              <Nav.Link href="/photos">Photos</Nav.Link>
             </Nav>
             <Nav>
-              <Nav.Link eventKey={2} href="#memes">
+              <Nav.Link target='_blank' eventKey={2} href="https://darwin-quinones.github.io">
                 Darwin
               </Nav.Link>
             </Nav>
