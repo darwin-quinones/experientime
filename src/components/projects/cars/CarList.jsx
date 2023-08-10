@@ -210,7 +210,7 @@ const CarList = () => {
 
     var c = 1
     return (
-        <div>
+        <div className='container'>
             <div className="card table table-response">
                 <div className="card-header table table-responsive" style={{ backgroundColor: "#33527F", float: 'right' }}>
                     <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#createCarModal">
