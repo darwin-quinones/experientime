@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {Route, Routes } from 'react-router-dom';
 import SitebarMenu from './components/SidebarMenu';
 import CarCreate from './components/projects/cars/CarCreate';
 import CarList from './components/projects/cars/CarList';
@@ -9,13 +9,11 @@ import PhotoList from './components/projects/photos/PhotoList';
 
 function AppRouter() {
     return (
-        <Router>
-            <Routes>
-                <Route path='/' element={<Dashboard />} />
-                <Route path='/cars' element={<CarList />} />
-                <Route path='/photos' element={<PhotoList />} />
-            </Routes>
-        </Router>
+        <Routes>
+            <Route path='/' element={<Dashboard />} />
+            <Route path='/cars' element={<CarList />} />
+            <Route path='/photos' element={<PhotoList />} />
+        </Routes>
     );
 }
 

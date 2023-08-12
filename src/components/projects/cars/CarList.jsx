@@ -1,17 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { getAllCars, axiosCar } from '../../../services/fetchCRUDCarService';
 import { axiosCountry } from '../../../services/axiosCountryService';
-import { confirmDeletionAlert } from '../alerts/Alerts';
-import * as Alerts from '../alerts/Alerts'
-import CarCreate from './CarCreate.jsx';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-icons/font/bootstrap-icons.css'
-import 'bootstrap/js/dist/dropdown.js'
-import validator from 'validator';
-
 import { Formik, Field, Form, ErrorMessage, useFormik, } from 'formik';
+import Swal from 'sweetalert2';
 import * as Yup from 'yup'
-import axios from 'axios';
+
 
 
 const CarList = () => {
@@ -168,7 +161,6 @@ const CarList = () => {
     }
 
     const deleteCarById = (id) => {
-        //confirmDeletionAlert()
         axiosCar.delete(`/cars/${id}`)
         .then((response) => {
             console.log('response of deliting: ', response)
@@ -178,37 +170,25 @@ const CarList = () => {
         })
         .catch((error) => console.log(error))
     }
-    const API_CARS = [
-        {
-            "id": 21,
-            "name": "Spark GT",
-            "model": "model LT",
-            "brand": "Chevrolet",
-            "country": "Colombia",
-            "fechaCreate": "2022-10-26",
-            "fechaUpdate": "2022-10-27"
-        },
-        {
-            "id": 22,
-            "name": "Toyota TXL",
-            "model": "model Diesel",
-            "brand": "Toyota",
-            "country": "Japan",
-            "fechaCreate": "2022-10-26",
-            "fechaUpdate": null
-        },
-        {
-            "id": 23,
-            "name": "Mercedes Benz AGM",
-            "model": "model Turbo",
-            "brand": "Mercedes Benz",
-            "country": "Germany",
-            "fechaCreate": "2022-10-26",
-            "fechaUpdate": null
-        }
-    ]
+    const deleteCarConfirmationAlert = (id) => {
+        return Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            deleteCarById(id)
+          }
+        })
+      }
 
-    var c = 1
+   
+
+    var counter = 1
     return (
         <div className='container'>
             <div className="card table table-response">
@@ -235,7 +215,7 @@ const CarList = () => {
                         <tbody>
                             {(cars ? cars.map((car) => (
                                 <tr key={car.id}>
-                                    <td>{c++}</td>
+                                    <td>{counter++}</td>
                                     <td>{car.name}</td>
                                     <td>{car.model}</td>
                                     <td>{car.brand}</td>
@@ -253,7 +233,7 @@ const CarList = () => {
                                             onClick={() => getCarById(car.id)}
                                         >Edit</button>
                                         <button type="button" className="btn btn-danger" 
-                                        onClick={ () => deleteCarById(car.id)}>Delete</button>
+                                        onClick={ () => deleteCarConfirmationAlert(car.id)}>Delete</button>
                                     </td>
                                 </tr>
                             ))
