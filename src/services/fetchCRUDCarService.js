@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-export const getAllCars = async () => {
-    let response = await fetch('http://127.0.0.1:8000/api/cars')
+export const getAllCars = async (page) => {
+    let response = await fetch(`http://127.0.0.1:8000/api/cars?page=${page}`)
     return response.json()
 }
 

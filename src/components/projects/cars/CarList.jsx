@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getAllCars, axiosCar } from '../../../services/fetchCRUDCarService';
 import { axiosCountry } from '../../../services/axiosCountryService';
 import { Formik, Field, Form, ErrorMessage, useFormik, } from 'formik';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup'
+import { ContentCutOutlined, LastPage } from '@mui/icons-material';
 
 
 
@@ -11,7 +17,9 @@ const CarList = () => {
 
     const [cars, setCars] = useState([])
     const [cauntries, setCauntries] = useState([])
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const [lastPage, setTotalPages] = useState(1);
+    const [totalRegisters, setTotalRegisters] = useState(0)
     const [clickedCar, setClickedCar] = useState({
         id: '',
         name: '',
@@ -36,7 +44,7 @@ const CarList = () => {
     useEffect(() => {
         listCars()
         getCountries()
-    }, [])
+    }, [currentPage])
 
     useEffect(() => {
         if (showModal) {
@@ -63,16 +71,24 @@ const CarList = () => {
     }
 
     const listCars = async () => {
-        getAllCars()
+        axiosCar.get(`/cars?page=${currentPage}`)
             .then((response) => {
-                setCars(response)
-            }).catch((error) => {
+                console.log(response.data)
+                setCars(response.data.data)
+                setCurrentPage(response.data.current_page)
+                setTotalPages(response.data.last_page);
+                setTotalRegisters(response.data.total)
+            })
+            .catch((error) => {
                 console.log(`Something went wrong: ${error}`)
             })
-        // .finally(() => {
-        //     console.log('ended obtaining cars')
-        // })
     }
+    const handlePageChange = (page) => {
+        console.log('page: ', page, ' currentPage: ', currentPage, ' lastPage: ', lastPage)
+        if (page <= currentPage || page <= lastPage) {
+            setCurrentPage(page);
+        }
+    };
 
     const initialValues = {
         name: '',
@@ -162,39 +178,75 @@ const CarList = () => {
 
     const deleteCarById = (id) => {
         axiosCar.delete(`/cars/${id}`)
-        .then((response) => {
-            console.log('response of deliting: ', response)
-            if(response.status === 200 && response.data.message){
-                listCars()
-            }
-        })
-        .catch((error) => console.log(error))
+            .then((response) => {
+                console.log('response of deliting: ', response)
+                if (response.status === 200 && response.data.message) {
+                    listCars()
+                }
+            })
+            .catch((error) => console.log(error))
     }
     const deleteCarConfirmationAlert = (id) => {
         return Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#6c757d',
-          confirmButtonText: 'Yes, delete it!'
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
-          if (result.isConfirmed) {
-            deleteCarById(id)
-          }
+            if (result.isConfirmed) {
+                deleteCarById(id)
+            }
         })
-      }
+    }
+    const BuscarCar = () => {
 
-   
+    }
+
+    const downloadCarsWord = () => {
+
+    }
+    const downloadCarspPDF = () => {
+
+    }
+    const downloadCarsExcel = () => {
+        const filename = "cars-excel.xlsx"
+        axiosCar.get("/reports/generate-cars-excel",  {responseType: 'blob'})
+        .then((response) => {
+            const blob  = new Blob([response.data], {type: 'application/octet-stream'})
+            // create download link for the blob
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', filename)
+            //trigger the download link
+            link.click();
+            // Cleanup the link and object URL
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
+           
+        })
+        .catch((error) => console.error(`There was an error while downloading: ${error}`))
+    }
 
     var counter = 1
     return (
         <div className='container'>
             <div className="card table table-response">
-                <div className="card-header table table-responsive" style={{ backgroundColor: "#33527F", float: 'right' }}>
-                    <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#createCarModal">
+                <div className="card-header table table-responsive">
+                    <button type="button" className="btn btn-success " data-bs-toggle="modal" data-bs-target="#createCarModal">
                         Create Car
+                    </button>
+                    <button type="button" className="btn btn-primary ms-2" onClick={downloadCarsWord}>
+                        Download Word
+                    </button>
+                    <button type="button" className="btn btn-danger mx-2" onClick={downloadCarspPDF}>
+                        Download Pdf
+                    </button>
+                    <button type="button" className="btn btn-success" onClick={downloadCarsExcel}>
+                        Download Excel
                     </button>
                 </div>
                 <div className="card-body table table-responsive">
@@ -213,7 +265,7 @@ const CarList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {(cars ? cars.map((car) => (
+                            {(cars[0] ? cars.map((car) => (
                                 <tr key={car.id}>
                                     <td>{counter++}</td>
                                     <td>{car.name}</td>
@@ -229,11 +281,11 @@ const CarList = () => {
                                     <td>
                                         <button type="button" className="btn btn-warning"
                                             style={{ marginRight: "5px" }}
-                                            
+
                                             onClick={() => getCarById(car.id)}
                                         >Edit</button>
-                                        <button type="button" className="btn btn-danger" 
-                                        onClick={ () => deleteCarConfirmationAlert(car.id)}>Delete</button>
+                                        <button type="button" className="btn btn-danger"
+                                            onClick={() => deleteCarConfirmationAlert(car.id)}>Delete</button>
                                     </td>
                                 </tr>
                             ))
@@ -246,6 +298,18 @@ const CarList = () => {
                             )}
                         </tbody>
                     </table>
+                    <nav aria-label="Page navigation example">
+                        <ul className="pagination">
+                            <li className="page-item"><button className="page-link" onClick={() => handlePageChange(1)} title="Go to start"><KeyboardDoubleArrowLeftIcon /></button></li>
+                            <li className="page-item"><button className="page-link" onClick={() => handlePageChange(currentPage - 1)} title="Previous"><KeyboardArrowLeftIcon /></button></li>
+                            <li className="page-item"><button className="page-link" onClick={() => handlePageChange(currentPage + 1)} title="Next"><KeyboardArrowRightIcon /></button></li>
+                            <li className="page-item"><button className="page-link" onClick={() => handlePageChange(lastPage)} title="Go to end"><KeyboardDoubleArrowRightIcon /></button></li>
+                        </ul>
+                    </nav>
+
+                </div>
+                <div className="card-footer text-muted">
+                    <b>Page</b> <span className="badge bg-primary">{currentPage}</span> <b>of</b> <span className="badge bg-primary">{lastPage}</span> | <b>Registers</b> <span className="badge bg-success">{totalRegisters}</span>
                 </div>
             </div>
             {/* Modals */}
