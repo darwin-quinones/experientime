@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { getAllCars, axiosCar } from '../../../services/fetchCRUDCarService';
 import { axiosCountry } from '../../../services/axiosCountryService';
 import { Formik, Field, Form, ErrorMessage, useFormik, } from 'formik';
+import { PDFViewer } from '@react-pdf/renderer';
+import CarsPDF from './CarsPDF.jsx';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -16,6 +18,7 @@ import { ContentCutOutlined, LastPage } from '@mui/icons-material';
 const CarList = () => {
 
     const [cars, setCars] = useState([])
+    const [allCars, setAllCars] = useState([])
     const [cauntries, setCauntries] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setTotalPages] = useState(1);
@@ -73,7 +76,6 @@ const CarList = () => {
     const listCars = async () => {
         axiosCar.get(`/cars?page=${currentPage}`)
             .then((response) => {
-                console.log(response.data)
                 setCars(response.data.data)
                 setCurrentPage(response.data.current_page)
                 setTotalPages(response.data.last_page);
@@ -84,7 +86,6 @@ const CarList = () => {
             })
     }
     const handlePageChange = (page) => {
-        console.log('page: ', page, ' currentPage: ', currentPage, ' lastPage: ', lastPage)
         if (page <= currentPage || page <= lastPage) {
             setCurrentPage(page);
         }
@@ -129,11 +130,9 @@ const CarList = () => {
         // resetForm({ values: '' })
         axiosCar.put(`/cars/${car.id}`, car)
             .then((response) => {
-                console.log('card edited: ', response.data);
                 listCars()
             })
             .catch((error) => console.log(error))
-        // console.log('edit car values: ', values)
 
     }
     const formik = useFormik({
@@ -179,7 +178,6 @@ const CarList = () => {
     const deleteCarById = (id) => {
         axiosCar.delete(`/cars/${id}`)
             .then((response) => {
-                console.log('response of deliting: ', response)
                 if (response.status === 200 && response.data.message) {
                     listCars()
                 }
@@ -209,26 +207,30 @@ const CarList = () => {
 
     }
     const downloadCarspPDF = () => {
-
+        axiosCar.get('/all_cars/all')
+        .then((response) => {
+            setAllCars(response.data)
+        })
+        .catch((error) => {console.log(error)});
     }
     const downloadCarsExcel = () => {
         const filename = "cars-excel.xlsx"
-        axiosCar.get("/reports/generate-cars-excel",  {responseType: 'blob'})
-        .then((response) => {
-            const blob  = new Blob([response.data], {type: 'application/octet-stream'})
-            // create download link for the blob
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a')
-            link.href = url
-            link.setAttribute('download', filename)
-            //trigger the download link
-            link.click();
-            // Cleanup the link and object URL
-            link.parentNode.removeChild(link);
-            window.URL.revokeObjectURL(url);
-           
-        })
-        .catch((error) => console.error(`There was an error while downloading: ${error}`))
+        axiosCar.get("/reports/generate-cars-excel", { responseType: 'blob' })
+            .then((response) => {
+                const blob = new Blob([response.data], { type: 'application/octet-stream' })
+                // create download link for the blob
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a')
+                link.href = url
+                link.setAttribute('download', filename)
+                //trigger the download link
+                link.click();
+                // Cleanup the link and object URL
+                link.parentNode.removeChild(link);
+                window.URL.revokeObjectURL(url);
+
+            })
+            .catch((error) => console.error(`There was an error while downloading: ${error}`))
     }
 
     var counter = 1
@@ -242,7 +244,7 @@ const CarList = () => {
                     <button type="button" className="btn btn-primary ms-2" onClick={downloadCarsWord}>
                         Download Word
                     </button>
-                    <button type="button" className="btn btn-danger mx-2" onClick={downloadCarspPDF}>
+                    <button type="button" onClick={downloadCarspPDF} className="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#CarsPDFModal">
                         Download Pdf
                     </button>
                     <button type="button" className="btn btn-success" onClick={downloadCarsExcel}>
@@ -543,6 +545,31 @@ const CarList = () => {
                                 <button type="submit" className="btn btn-success">Send</button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            </div>
+
+            {/* cars pdf */}
+            <div className="modal fade" id="CarsPDFModal" tabIndex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="createCarModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-xl">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="createCarModalLabel">Cars PDF</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className='row'>
+                                <div className='col-xl-12'>
+                                    {allCars[0] &&
+                                        <PDFViewer style={{ width: "100%", height: "90vh" }}>
+                                            <CarsPDF cars={allCars} />
+                                        </PDFViewer>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
