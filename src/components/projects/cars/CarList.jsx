@@ -241,9 +241,9 @@ const CarList = () => {
                     <button type="button" className="btn btn-success " data-bs-toggle="modal" data-bs-target="#createCarModal">
                         Create Car
                     </button>
-                    <button type="button" className="btn btn-primary ms-2" onClick={downloadCarsWord}>
+                    {/* <button type="button" className="btn btn-primary ms-2" onClick={downloadCarsWord}>
                         Download Word
-                    </button>
+                    </button> */}
                     <button type="button" onClick={downloadCarspPDF} className="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#CarsPDFModal">
                         Download Pdf
                     </button>
@@ -267,7 +267,7 @@ const CarList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {(cars[0] ? cars.map((car) => (
+                            {(cars &&  cars.map((car) => (
                                 <tr key={car.id}>
                                     <td>{counter++}</td>
                                     <td>{car.name}</td>
@@ -291,12 +291,7 @@ const CarList = () => {
                                     </td>
                                 </tr>
                             ))
-                                :
-                                (
-                                    <tr key={cars}>
-                                        <td colSpan={10}>No data</td>
-                                    </tr>
-                                )
+                               
                             )}
                         </tbody>
                     </table>

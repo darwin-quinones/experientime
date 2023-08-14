@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, Image, Text, Document, View, Note } from "@react-pdf/renderer";
+import { Page, Text, Document, View, } from "@react-pdf/renderer";
 import { styles } from "../../../css/CarsPDFStyles.js";
 
 const CarsPDF = (cars) => {
