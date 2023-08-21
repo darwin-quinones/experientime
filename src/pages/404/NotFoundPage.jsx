@@ -1,15 +1,19 @@
 import React from "react";
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
-const NotFounPage = () =>{
+const NotFounPage = () => {
+    const navigate = useNavigate()
 
-    const navigate = useHistory()
-
-    return(
-        <div>
+    return (
+        <div className="container">
             <h1>404 - Page not found :( </h1>
-            <button onClick={ () => navigate.push('/') }>
-                Go back to Home 
+            <div className="alert alert-danger" role="alert">
+            <span>Ups it seems to be this isn't the page you're looking for </span>
+            </div>
+           
+            <p className="lead"></p>
+            <button className="btn btn-primary"onClick={() => navigate('/')}>
+                Go back to Home
             </button>
         </div>
     )
