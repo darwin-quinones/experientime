@@ -32,6 +32,7 @@ const CarList = () => {
     });
 
     const [showModal, setShowModal] = useState(false); // State to manage modal visibility
+    const [isDisable, setDisabled] = useState(false); // State od button
 
     // Function to open the modal
     const openModal = () => {
@@ -76,12 +77,14 @@ const CarList = () => {
     const listCars = async () => {
         axiosCar.get(`/cars?page=${currentPage}`)
             .then((response) => {
-                setCars(response.data.data)
+                console.log('amount of cars: ', response.data.data)
+
                 setCurrentPage(response.data.current_page)
                 setTotalPages(response.data.last_page);
                 setTotalRegisters(response.data.total)
             })
             .catch((error) => {
+                setDisabled(true)
                 console.log(`Something went wrong: ${error}`)
             })
     }
@@ -199,19 +202,13 @@ const CarList = () => {
             }
         })
     }
-    const BuscarCar = () => {
 
-    }
-
-    const downloadCarsWord = () => {
-
-    }
     const downloadCarspPDF = () => {
         axiosCar.get('/all_cars/all')
-        .then((response) => {
-            setAllCars(response.data)
-        })
-        .catch((error) => {console.log(error)});
+            .then((response) => {
+                setAllCars(response.data)
+            })
+            .catch((error) => { console.log(error) });
     }
     const downloadCarsExcel = () => {
         const filename = "cars-excel.xlsx"
@@ -238,16 +235,21 @@ const CarList = () => {
         <div className='container'>
             <div className="card table table-response">
                 <div className="card-header table table-responsive">
-                    <button type="button" className="btn btn-success " data-bs-toggle="modal" data-bs-target="#createCarModal">
+                    
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <strong>I am sorry</strong>This functionality is not available right now due to I am deploying my API service 
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <button type="button" className="btn btn-success " data-bs-toggle="modal" data-bs-target="#createCarModal" disabled={isDisable}>
                         Create Car
                     </button>
                     {/* <button type="button" className="btn btn-primary ms-2" onClick={downloadCarsWord}>
                         Download Word
                     </button> */}
-                    <button type="button" onClick={downloadCarspPDF} className="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#CarsPDFModal">
+                    <button type="button" onClick={downloadCarspPDF} className="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#CarsPDFModal" disabled={isDisable}>
                         Download Pdf
                     </button>
-                    <button type="button" className="btn btn-success" onClick={downloadCarsExcel}>
+                    <button type="button" className="btn btn-success" onClick={downloadCarsExcel} disabled={isDisable}>
                         Download Excel
                     </button>
                 </div>
@@ -267,7 +269,7 @@ const CarList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {(cars &&  cars.map((car) => (
+                            {(cars && cars.map((car) => (
                                 <tr key={car.id}>
                                     <td>{counter++}</td>
                                     <td>{car.name}</td>
@@ -291,7 +293,7 @@ const CarList = () => {
                                     </td>
                                 </tr>
                             ))
-                               
+
                             )}
                         </tbody>
                     </table>
