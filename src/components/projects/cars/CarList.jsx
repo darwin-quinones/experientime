@@ -85,7 +85,7 @@ const CarList = () => {
             })
             .catch((error) => {
                 setDisabled(true)
-                console.log(`Something went wrong: ${error}`)
+                // console.log(`Something went wrong: ${error}`)
             })
     }
     const handlePageChange = (page) => {
@@ -235,10 +235,9 @@ const CarList = () => {
         <div className='container'>
             <div className="card table table-response">
                 <div className="card-header table table-responsive">
-                    
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <div className="alert alert-info alert-dismissible fade show" role="alert">
                         <strong>I am sorry</strong>This functionality is not available right now due to I am deploying my API service 
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     <button type="button" className="btn btn-success " data-bs-toggle="modal" data-bs-target="#createCarModal" disabled={isDisable}>
                         Create Car
