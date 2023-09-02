@@ -746,7 +746,7 @@ const PhotoList = () => {
     const getImages = (page) => {
         axiosFhoto.get(`/photos/?${unsflashParams}&page=${page}`)
             .then((response) => {
-                console.log(response.data)
+                //console.log(response.data)
                 // Append new images to existing images
                 setInitialImages((prevImages) => [...prevImages, ...response.data]);
                 setCurrentPage(page);
