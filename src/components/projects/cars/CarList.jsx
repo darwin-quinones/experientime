@@ -77,8 +77,7 @@ const CarList = () => {
     const listCars = async () => {
         axiosCar.get(`/cars?page=${currentPage}`)
             .then((response) => {
-                console.log('amount of cars: ', response.data.data)
-
+                setCars(response.data.data)
                 setCurrentPage(response.data.current_page)
                 setTotalPages(response.data.last_page);
                 setTotalRegisters(response.data.total)
@@ -203,7 +202,7 @@ const CarList = () => {
         })
     }
 
-    const downloadCarspPDF = () => {
+    const downloadCarsPDF = () => {
         axiosCar.get('/all_cars/all')
             .then((response) => {
                 setAllCars(response.data)
@@ -235,17 +234,13 @@ const CarList = () => {
         <div className='container'>
             <div className="card table table-response">
                 <div className="card-header table table-responsive">
-                    <div className="alert alert-info alert-dismissible fade show" role="alert">
-                        <strong>I am sorry</strong>This functionality is not available right now due to I am deploying my API service 
-                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
                     <button type="button" className="btn btn-success " data-bs-toggle="modal" data-bs-target="#createCarModal" disabled={isDisable}>
                         Create Car
                     </button>
                     {/* <button type="button" className="btn btn-primary ms-2" onClick={downloadCarsWord}>
                         Download Word
                     </button> */}
-                    <button type="button" onClick={downloadCarspPDF} className="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#CarsPDFModal" disabled={isDisable}>
+                    <button type="button" onClick={downloadCarsPDF} className="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#CarsPDFModal" disabled={isDisable}>
                         Download Pdf
                     </button>
                     <button type="button" className="btn btn-success" onClick={downloadCarsExcel} disabled={isDisable}>
