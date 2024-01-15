@@ -26,13 +26,13 @@ const ImagePreviewModal = (props) => {
                                                     </span>
                                                     <div className='div-dropdown' style={{}}>
                                                         <button type="button" className="btn btn-success" onClick={() => downloadNormalImage(clickedImage.links.download_location)}>
-                                                            Descargar
+                                                            Download
                                                         </button>
                                                         <button type="button" className="btn-close" onClick={ closeModal } ></button>
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div className="modal-header"> No se hay datos</div>
+                                                <div className="modal-header"> No data available</div>
                                             )
                                     }
                                     <div className="modal-body">
